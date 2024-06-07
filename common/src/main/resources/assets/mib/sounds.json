@@ -1,0 +1,14 @@
+{
+  "mib.instrument.eastern_trumpet_start": {
+    "sounds": [
+      "mib:instrument/eastern_trumpet/eastern_trumpet_start"
+    ],
+    "subtitle": "subtitles.mib.instrument.mib.eastern_trumpet"
+  },
+  "mib.instrument.eastern_trumpet_loop": {
+    "sounds": [
+      "mib:instrument/eastern_trumpet/eastern_trumpet_loop"
+    ],
+    "subtitle": "subtitles.mib.instrument.mib.eastern_trumpet"
+  }
+}
