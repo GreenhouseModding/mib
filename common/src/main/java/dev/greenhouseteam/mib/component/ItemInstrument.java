@@ -65,7 +65,7 @@ public record ItemInstrument(EitherHolder<MibSoundSet> sound, KeyWithOctave defa
 
         ItemInstrument instrumentComponent = stack.get(MibComponents.INSTRUMENT);
         var instrument = instrumentComponent.sound().unwrap(player.level().registryAccess());
-        if (instrument.isEmpty() || !instrument.get().isBound())
+        if (instrument.isEmpty())
             return InteractionResultHolder.pass(stack);
 
         player.startUsingItem(hand);
