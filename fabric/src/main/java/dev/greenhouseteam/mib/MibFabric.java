@@ -2,10 +2,7 @@ package dev.greenhouseteam.mib;
 
 import dev.greenhouseteam.mib.data.MibSoundSet;
 import dev.greenhouseteam.mib.network.clientbound.StartPlayingClientboundPacket;
-import dev.greenhouseteam.mib.registry.MibComponents;
-import dev.greenhouseteam.mib.registry.MibItems;
-import dev.greenhouseteam.mib.registry.MibRegistries;
-import dev.greenhouseteam.mib.registry.MibSoundEvents;
+import dev.greenhouseteam.mib.registry.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -20,6 +17,7 @@ public class MibFabric implements ModInitializer {
 
     public static void registerContents() {
         MibComponents.registerAll(Registry::register);
+        MibInstrumentAnimations.registerAll(Registry::register);
         MibItems.registerAll(Registry::register);
         MibSoundEvents.registerAll(Registry::register);
 

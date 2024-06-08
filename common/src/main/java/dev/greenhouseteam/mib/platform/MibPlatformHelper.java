@@ -1,6 +1,8 @@
 package dev.greenhouseteam.mib.platform;
 
+import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 
 public interface MibPlatformHelper {
@@ -36,6 +38,8 @@ public interface MibPlatformHelper {
 
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    <T> Registry<T> createRegistry(ResourceKey<Registry<T>> registryKey);
 
     void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity);
 }

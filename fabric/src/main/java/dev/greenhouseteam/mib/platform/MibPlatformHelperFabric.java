@@ -1,14 +1,16 @@
 package dev.greenhouseteam.mib.platform;
 
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Collection;
-import java.util.List;
 
 public class MibPlatformHelperFabric implements MibPlatformHelper {
 
@@ -27,6 +29,11 @@ public class MibPlatformHelperFabric implements MibPlatformHelper {
     public boolean isDevelopmentEnvironment() {
 
         return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public <T> Registry<T> createRegistry(ResourceKey<Registry<T>> registryKey) {
+        return FabricRegistryBuilder.createSimple(registryKey).buildAndRegister();
     }
 
     @Override
