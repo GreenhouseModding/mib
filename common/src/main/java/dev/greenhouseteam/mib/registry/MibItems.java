@@ -11,8 +11,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
 public class MibItems {
-    public static final Item EASTERN_TRUMPET = new MibInstrumentItem(new Item.Properties().component(MibComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.EASTERN_TRUMPET, new KeyWithOctave(Key.G_SHARP, 3), TootInstrumentAnimation.INSTANCE)));
-    public static final Item KEYBOARD = new MibInstrumentItem(new Item.Properties().component(MibComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.KEYBOARD, 1)));
+    public static final Item EASTERN_TRUMPET = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.EASTERN_TRUMPET, new KeyWithOctave(Key.G_SHARP, 3), TootInstrumentAnimation.INSTANCE)));
+    public static final Item KEYBOARD = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.KEYBOARD, 1)));
 
     public static void registerAll(RegistrationCallback<Item> callback) {
         callback.register(BuiltInRegistries.ITEM, Mib.asResource("eastern_trumpet"), EASTERN_TRUMPET);
