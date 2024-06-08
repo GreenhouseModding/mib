@@ -58,6 +58,9 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
 
     @Override
     public void tick() {
+        if (isStopped())
+            return;
+
         SoundEngineAccessor soundEngine = ((SoundEngineAccessor) ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine());
         if (!hasPlayedLoop && getOrCalculateStartSoundStop() <= soundEngine.mib$getTickCount() && extendedSound.sounds().loop().isPresent()) {
             hasPlayedLoop = true;
