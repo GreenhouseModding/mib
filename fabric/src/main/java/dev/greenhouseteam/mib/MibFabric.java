@@ -33,8 +33,9 @@ public class MibFabric implements ModInitializer {
                 if (stack.is(Items.GOAT_HORN))
                     goatHorn = stack;
             }
-            entries.addAfter(goatHorn, MibItems.EASTERN_TRUMPET);
-            entries.addAfter(MibItems.EASTERN_TRUMPET, MibItems.KEYBOARD);
+            entries.addAfter(goatHorn, MibItems.FANTASY_TRUMPET);
+            entries.addAfter(MibItems.FANTASY_TRUMPET, MibItems.FLUTE);
+            entries.addAfter(MibItems.FLUTE, MibItems.KEYBOARD);
         });
     }
 

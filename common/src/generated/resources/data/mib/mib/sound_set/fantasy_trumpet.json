@@ -1,0 +1,12 @@
+{
+  "sounds": {
+    "c3": [
+      {
+        "sounds": {
+          "loop": "mib:mib.instrument.fantasy_trumpet_loop",
+          "start": "mib:mib.instrument.fantasy_trumpet_start"
+        }
+      }
+    ]
+  }
+}
