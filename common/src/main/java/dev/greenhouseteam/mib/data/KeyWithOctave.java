@@ -15,7 +15,7 @@ public record KeyWithOctave(Key key, int octave) {
     public static final KeyWithOctave DEFAULT = new KeyWithOctave(Key.C, DEFAULT_OCTAVE);
 
     public static final Codec<KeyWithOctave> CODEC = Codec.STRING.flatXmap(string -> {
-        if (!string.contains("([0-9]+)"))
+        if (!string.matches("..[0-9]"))
             return resultOrError(string, Optional.of(DEFAULT_OCTAVE));
         return resultOrError(string, Optional.empty());
         }, octaveKey -> DataResult.success(octaveKey.key.getSerializedName() + octaveKey.octave));

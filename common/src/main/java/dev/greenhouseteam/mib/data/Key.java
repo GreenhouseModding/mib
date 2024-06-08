@@ -1,6 +1,5 @@
 package dev.greenhouseteam.mib.data;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +20,6 @@ public enum Key implements StringRepresentable {
     Key(String name) {
         this.name = name;
     }
-
-    public static final Codec<Key> CODEC = StringRepresentable.fromEnum(Key::values);
 
     private final String name;
 
