@@ -56,10 +56,10 @@ public class MibSoundSet {
     public ExtendedSound getSound(KeyWithOctave keyWithOctave, float velocity) {
         ExtendedSound soundEvent = null;
         if (octaveKeyToSoundMap.containsKey(keyWithOctave))
-            soundEvent = octaveKeyToSoundMap.get(keyWithOctave).stream().filter(sound -> sound.isVelocityWithinRange(velocity)).min(Comparator.comparingDouble(value -> value.velocityComparison(velocity))).orElse(null);
+            soundEvent = octaveKeyToSoundMap.get(keyWithOctave).stream().filter(sound -> sound.isVolumeWithinRange(velocity)).min(Comparator.comparingDouble(value -> value.volumeComparison(velocity))).orElse(null);
 
         if (soundEvent == null)
-            soundEvent = octaveKeyToSoundMap.get(getClosestDefined(keyWithOctave)).stream().filter(sound -> sound.isVelocityWithinRange(velocity)).min(Comparator.comparingDouble(value -> value.velocityComparison(velocity))).orElse(null);
+            soundEvent = octaveKeyToSoundMap.get(getClosestDefined(keyWithOctave)).stream().filter(sound -> sound.isVolumeWithinRange(velocity)).min(Comparator.comparingDouble(value -> value.volumeComparison(velocity))).orElse(null);
 
         return soundEvent;
     }

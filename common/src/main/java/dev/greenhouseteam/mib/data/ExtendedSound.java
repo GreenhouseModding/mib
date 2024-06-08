@@ -1,5 +1,6 @@
 package dev.greenhouseteam.mib.data;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.greenhouseteam.mib.util.FloatRange;
@@ -11,74 +12,77 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.valueproviders.FloatProvider;
 
 import java.util.Optional;
+import java.util.function.Function;
 
-public record ExtendedSound(Holder<SoundEvent> startSound,
-                            Optional<Holder<SoundEvent>> loopSound,
-                            Optional<Holder<SoundEvent>> stopSound,
+public record ExtendedSound(Sounds sounds,
                             Optional<FloatProvider> pitch,
-                            Optional<FloatRange> velocityRange,
+                            Optional<FloatRange> volumeRange,
                             int durationBeforeLoop,
                             boolean looping) {
 
-    public ExtendedSound(Holder<SoundEvent> startSound, Optional<Holder<SoundEvent>> loopSound, Optional<Holder<SoundEvent>> stopSound, int durationBeforeLoop, boolean looping) {
-        this(startSound, loopSound, stopSound, Optional.empty(), Optional.empty(), durationBeforeLoop, looping);
-    }
-
-    public ExtendedSound(Holder<SoundEvent> startSound, int durationBeforeLoop, boolean looping) {
-        this(startSound, Optional.empty(), Optional.empty(), durationBeforeLoop, looping);
-    }
-
-    public ExtendedSound(Holder<SoundEvent> startSound, Holder<SoundEvent> loopSound, int durationBeforeLoop, boolean looping) {
-        this(startSound, Optional.of(loopSound), Optional.empty(), durationBeforeLoop, looping);
-    }
-
-    public ExtendedSound(Holder<SoundEvent> startSound, Holder<SoundEvent> loopSound, Holder<SoundEvent> stopSound, int durationBeforeLoop, boolean looping) {
-        this(startSound, Optional.of(loopSound), Optional.of(stopSound), durationBeforeLoop, looping);
+    public ExtendedSound(Sounds sounds, int durationBeforeLoop, boolean looping) {
+        this(sounds, Optional.empty(), Optional.empty(), durationBeforeLoop, looping);
     }
 
     public static final Codec<ExtendedSound> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            SoundEvent.CODEC.fieldOf("start_sound").forGetter(ExtendedSound::startSound),
-            SoundEvent.CODEC.optionalFieldOf("loop_sound").forGetter(ExtendedSound::loopSound),
-            SoundEvent.CODEC.optionalFieldOf("stop_sound").forGetter(ExtendedSound::stopSound),
+            Sounds.CODEC.fieldOf("sounds").forGetter(ExtendedSound::sounds),
             FloatProvider.codec(0.0F, 1.0F).optionalFieldOf("pitch").forGetter(ExtendedSound::pitch),
-            FloatRange.codec(0.0F, 1.0F).optionalFieldOf("velocity_range").forGetter(ExtendedSound::velocityRange),
+            FloatRange.codec(0.0F, 1.0F).optionalFieldOf("volume_range").forGetter(ExtendedSound::volumeRange),
             Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("duration_before_loop", 20).forGetter(ExtendedSound::durationBeforeLoop),
             Codec.BOOL.optionalFieldOf("loop", true).forGetter(ExtendedSound::looping)
     ).apply(inst, ExtendedSound::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ExtendedSound> STREAM_CODEC = new StreamCodec<>() {
-        @Override
-        public ExtendedSound decode(RegistryFriendlyByteBuf buf) {
-            return new ExtendedSound(
-                    SoundEvent.STREAM_CODEC.decode(buf),
-                    ByteBufCodecs.optional(SoundEvent.STREAM_CODEC).decode(buf),
-                    ByteBufCodecs.optional(SoundEvent.STREAM_CODEC).decode(buf),
-                    ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatProvider.CODEC)).decode(buf),
-                    ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatRange.codec(0.0F, 1.0F))).decode(buf),
-                    ByteBufCodecs.INT.decode(buf),
-                    ByteBufCodecs.BOOL.decode(buf)
-            );
-        }
+    public static final StreamCodec<RegistryFriendlyByteBuf, ExtendedSound> STREAM_CODEC = StreamCodec.composite(
+            Sounds.STREAM_CODEC,
+            ExtendedSound::sounds,
+            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatProvider.CODEC)),
+            ExtendedSound::pitch,
+            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatRange.codec(0.0F, 1.0F))),
+            ExtendedSound::volumeRange,
+            ByteBufCodecs.INT,
+            ExtendedSound::durationBeforeLoop,
+            ByteBufCodecs.BOOL,
+            ExtendedSound::looping,
+            ExtendedSound::new
+    );
 
-        @Override
-        public void encode(RegistryFriendlyByteBuf buf, ExtendedSound sound) {
-            SoundEvent.STREAM_CODEC.encode(buf, sound.startSound);
-            ByteBufCodecs.optional(SoundEvent.STREAM_CODEC).encode(buf, sound.loopSound);
-            ByteBufCodecs.optional(SoundEvent.STREAM_CODEC).encode(buf, sound.stopSound);
-            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatProvider.CODEC)).encode(buf, sound.pitch);
-            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatRange.codec(0.0F, 1.0F))).encode(buf, sound.velocityRange);
-            ByteBufCodecs.INT.encode(buf, sound.durationBeforeLoop);
-            ByteBufCodecs.BOOL.encode(buf, sound.looping);
-        }
-    };
-
-    public boolean isVelocityWithinRange(float value) {
-        return velocityRange.isEmpty() || velocityRange.get().isWithinRange(value);
+    public boolean isVolumeWithinRange(float value) {
+        return volumeRange.isEmpty() || volumeRange.get().isWithinRange(value);
     }
 
-    public double velocityComparison(float value) {
-        if (velocityRange.isEmpty())
+    public double volumeComparison(float value) {
+        if (volumeRange.isEmpty())
             return Double.MAX_VALUE;
-        return velocityRange.get().min() - value;
+        return volumeRange.get().min() - value;
+    }
+
+    public record Sounds(Holder<SoundEvent> start,
+                         Optional<Holder<SoundEvent>> loop,
+                         Optional<Holder<SoundEvent>> stop) {
+        public static final Codec<Sounds> DIRECT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
+                SoundEvent.CODEC.fieldOf("start").forGetter(Sounds::start),
+                SoundEvent.CODEC.optionalFieldOf("loop").forGetter(Sounds::loop),
+                SoundEvent.CODEC.optionalFieldOf("stop").forGetter(Sounds::stop)
+        ).apply(inst, Sounds::new));
+        public static final Codec<Sounds> CODEC = Codec.either(SoundEvent.CODEC, DIRECT_CODEC)
+                .xmap(either -> either.map(holder -> new Sounds(holder, Optional.empty(), Optional.empty()), Function.identity()), Either::right);
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, Sounds> STREAM_CODEC = StreamCodec.composite(
+                SoundEvent.STREAM_CODEC,
+                Sounds::start,
+                ByteBufCodecs.optional(SoundEvent.STREAM_CODEC),
+                Sounds::loop,
+                ByteBufCodecs.optional(SoundEvent.STREAM_CODEC),
+                Sounds::stop,
+                Sounds::new
+        );
+
+        public Sounds(Holder<SoundEvent> start) {
+            this(start, Optional.empty(), Optional.empty());
+        }
+
+        public Sounds(Holder<SoundEvent> start, Holder<SoundEvent> loop) {
+            this(start, Optional.of(loop), Optional.empty());
+        }
     }
 }

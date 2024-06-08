@@ -16,7 +16,7 @@ public class ClientUtil {
         Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(
                 player,
                 player.getItemInHand(hand),
-                extendedSound.startSound().value(),
+                extendedSound.sounds().start().value(),
                 extendedSound,
                 player.getSoundSource(),
                 volume,
