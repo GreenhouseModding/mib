@@ -1,7 +1,6 @@
 package dev.greenhouseteam.mib.client.sound;
 
 import com.mojang.blaze3d.audio.SoundBuffer;
-import dev.greenhouseteam.mib.access.PlayerAccess;
 import dev.greenhouseteam.mib.access.SoundBufferAccess;
 import dev.greenhouseteam.mib.client.util.MibClientUtil;
 import dev.greenhouseteam.mib.data.ExtendedSound;
@@ -44,8 +43,6 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
                             ExtendedSound extendedSound, SoundSource source,
                             float volume, float pitch, boolean isLooping) {
         super(sound, source, SoundInstance.createUnseededRandom());
-        if (player != null)
-            ((PlayerAccess)player).mib$setCurrentSoundInstance(this);
         this.player = player;
         this.x = x;
         this.y = y;
@@ -71,7 +68,6 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
         if (!hasPlayedLoop && getOrCalculateStartSoundStop() <= soundEngine.mib$getTickCount() || (hasPlayedLoop && player != null && stopPredicate.test(player))) {
             if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent())
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(extendedSound.sounds().stop().get().value(), this.volume, this.pitch));
-            ((PlayerAccess)player).mib$setCurrentSoundInstance(null);
             stop();
             return;
         }
