@@ -4,6 +4,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public interface MibPlatformHelper {
 
@@ -42,4 +45,10 @@ public interface MibPlatformHelper {
     <T> Registry<T> createRegistry(ResourceKey<Registry<T>> registryKey);
 
     void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity);
+
+    int getInstrumentCooldown(ItemStack stack, LivingEntity entity, int original);
+
+    void invokeTickEvents(Level level, LivingEntity entity, ItemStack stack, int useTicksRemaining);
+
+    int getInstrumentUseDuration(ItemStack stack, LivingEntity entity, int original);
 }

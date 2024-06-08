@@ -10,15 +10,14 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class MibSoundInstance extends AbstractTickableSoundInstance {
-    private final Player player;
-    private final ItemStack stack;
-    private final ExtendedSound extendedSound;
-    private boolean hasPlayedLoop;
+    protected final Player player;
+    protected final ItemStack stack;
+    protected final ExtendedSound extendedSound;
+    protected boolean hasPlayedLoop;
 
     public MibSoundInstance(Player player, ItemStack stack, SoundEvent sound,
                             ExtendedSound extendedSound, SoundSource source,

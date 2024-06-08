@@ -10,7 +10,7 @@ object Properties {
     const val LICENSE = "MPL-2.0"
 
     const val HOMEPAGE = "https://modrinth.com/project/mib"
-    const val CURSEFORGE_PROJECT_ID = "818440"
+    const val CURSEFORGE_PROJECT_ID = "???"
     const val CURSEFORGE_PAGE = "https://www.curseforge.com/minecraft/mc-mods/mib"
     const val MODRINTH_PROJECT_ID = "BDg6nMn3"
     const val GITHUB_REPO = "https://github.com/GreenhouseTeam/mib"

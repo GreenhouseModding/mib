@@ -1,5 +1,6 @@
 package dev.greenhouseteam.mib.item;
 
+import dev.greenhouseteam.mib.Mib;
 import dev.greenhouseteam.mib.component.ItemInstrument;
 import dev.greenhouseteam.mib.registry.MibComponents;
 import net.minecraft.world.InteractionHand;
@@ -27,7 +28,8 @@ public class MibInstrumentItem extends Item {
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int useTicksRemaining) {
         if (!stack.has(MibComponents.INSTRUMENT))
             return;
-        if (useTicksRemaining % 10 == 0) {
+        Mib.getHelper().invokeTickEvents(level, entity, stack, useTicksRemaining);
+        if (useTicksRemaining % 20 == 0) {
             entity.gameEvent(GameEvent.INSTRUMENT_PLAY, entity);
             if (stack.has(MibComponents.INSTRUMENT) && stack.get(MibComponents.INSTRUMENT).animation().isPresent() && !stack.get(MibComponents.INSTRUMENT).animation().get().handsToSwing().isEmpty())
                 stack.get(MibComponents.INSTRUMENT).animation().get().handsToSwing().forEach(hand -> entity.swing(hand, true));
@@ -38,21 +40,22 @@ public class MibInstrumentItem extends Item {
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
         if (!stack.has(MibComponents.INSTRUMENT))
             return 40;
-        return stack.get(MibComponents.INSTRUMENT).maxUseDuration();
+        return Mib.getHelper().getInstrumentUseDuration(stack, entity, stack.get(MibComponents.INSTRUMENT).maxUseDuration());
     }
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int useTicksRemaining) {
         super.releaseUsing(stack, level, entity, useTicksRemaining);
         if (entity instanceof Player player)
-            player.getCooldowns().addCooldown(stack.getItem(), 40);
+            player.getCooldowns().addCooldown(stack.getItem(), Mib.getHelper().getInstrumentCooldown(stack, entity, 40));
     }
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        ItemStack newStack = super.finishUsingItem(stack, level, entity);;
         if (entity instanceof Player player)
-            player.getCooldowns().addCooldown(stack.getItem(), 40);
-        return super.finishUsingItem(stack, level, entity);
+            player.getCooldowns().addCooldown(stack.getItem(), Mib.getHelper().getInstrumentCooldown(stack, entity, 40));
+        return newStack;
     }
 
     @Override
