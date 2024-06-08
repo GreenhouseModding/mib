@@ -41,16 +41,6 @@ public class MibPlatformHelperFabric implements MibPlatformHelper {
     }
 
     @Override
-    public void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity) {
-        Collection<ServerPlayer> players = PlayerLookup.tracking(entity);
-        for (ServerPlayer other : players) {
-            ServerPlayNetworking.send(other, payload);
-        }
-        if (entity instanceof ServerPlayer player && !players.contains(player))
-            ServerPlayNetworking.send(player, payload);
-    }
-
-    @Override
     public int getInstrumentCooldown(ItemStack stack, LivingEntity entity, int original) {
         return MibInstrumentEvents.COOLDOWN.invoker().getCooldown(stack, entity, original);
     }
@@ -63,5 +53,15 @@ public class MibPlatformHelperFabric implements MibPlatformHelper {
     @Override
     public int getInstrumentUseDuration(ItemStack stack, LivingEntity entity, int original) {
         return MibInstrumentEvents.USE_DURATION.invoker().getUseDuration(stack, entity, original);
+    }
+
+    @Override
+    public void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity) {
+        Collection<ServerPlayer> players = PlayerLookup.tracking(entity);
+        for (ServerPlayer other : players) {
+            ServerPlayNetworking.send(other, payload);
+        }
+        if (entity instanceof ServerPlayer player && !players.contains(player))
+            ServerPlayNetworking.send(player, payload);
     }
 }

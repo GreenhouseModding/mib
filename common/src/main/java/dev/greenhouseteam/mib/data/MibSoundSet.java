@@ -43,7 +43,7 @@ public class MibSoundSet {
         Mib.getHelper().sendTrackingClientboundPacket(new StartPlayingClientboundPacket(player.getId(), hand == InteractionHand.OFF_HAND, sound, velocity, keyWithOctave.getPitchFromNote(closest)), player);
     }
 
-    private KeyWithOctave getClosestDefined(KeyWithOctave keyWithOctave) {
+    public KeyWithOctave getClosestDefined(KeyWithOctave keyWithOctave) {
         if (octaveKeyToSoundMap.containsKey(keyWithOctave))
             return keyWithOctave;
         KeyWithOctave withOctave = octaveKeyToSoundMap.keySet().stream().filter(v -> v.getValue() < keyWithOctave.getValue()).min(Comparator.comparingInt(value -> value.getValue() - keyWithOctave.getValue())).orElse(null);
