@@ -6,6 +6,7 @@
   "client": [
     "client.PlayerMixin",
     "client.SoundEngineAccessor",
+    "client.SoundEngineMixin",
     "client.SoundManagerAccessor"
   ],
   "injectors": {

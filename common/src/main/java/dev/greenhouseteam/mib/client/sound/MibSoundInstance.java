@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class MibSoundInstance extends AbstractTickableSoundInstance {
+public class MibSoundInstance extends AbstractTickableSoundInstance implements UnrestrainedPitchSoundInstance {
     @Nullable
     protected final Player player;
     protected final Predicate<Player> stopPredicate;
