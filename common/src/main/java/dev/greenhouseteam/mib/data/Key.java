@@ -34,17 +34,21 @@ public enum Key implements StringRepresentable {
 
     public static Key getKey(String str) {
         for (Key key : Key.values())
-            if (str.contains(key.name)) {
+            if (str.equals(key.name))
                 return key;
-            }
+        throw new IllegalStateException("Could not find key '" + str + "'. Must be one of " + buildValuesString() + ".");
+    }
+
+    public static String buildValuesString() {
         StringBuilder builder = new StringBuilder("[ ");
         for (int i = 0; i < Key.values().length; ++i) {
-            builder.append(", ");
+            if (i != 0)
+                builder.append(", ");
             Key key = Key.values()[i];
             builder.append(key.getSerializedName());
         }
         builder.append(" ]");
-        throw new IllegalStateException("Could not find key '" + str + "'. Must be one of " + builder + ".");
+        return builder.toString();
     }
 
 }

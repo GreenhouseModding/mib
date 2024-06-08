@@ -1,7 +1,10 @@
 package dev.greenhouseteam.mib.data;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.util.Mth;
+
+import java.util.Optional;
 
 public record KeyWithOctave(Key key, int octave) {
 
@@ -11,11 +14,23 @@ public record KeyWithOctave(Key key, int octave) {
 
     public static final KeyWithOctave DEFAULT = new KeyWithOctave(Key.C, DEFAULT_OCTAVE);
 
-    public static final Codec<KeyWithOctave> CODEC = Codec.STRING.xmap(string -> {
+    public static final Codec<KeyWithOctave> CODEC = Codec.STRING.flatXmap(string -> {
         if (!string.contains("([0-9]+)"))
-            return new KeyWithOctave(Key.getKey(string), DEFAULT_OCTAVE);
-        return new KeyWithOctave(Key.getKey(string), Mth.clamp(Character.getNumericValue(string.charAt(2)), MIN_OCTAVE, MAX_OCTAVE));
-    }, keyWithPitch -> keyWithPitch.key.getSerializedName() + keyWithPitch.octave);
+            return resultOrError(string, Optional.of(DEFAULT_OCTAVE));
+        return resultOrError(string, Optional.empty());
+        }, octaveKey -> DataResult.success(octaveKey.key.getSerializedName() + octaveKey.octave));
+
+    private static DataResult<KeyWithOctave> resultOrError(String string, Optional<Integer> octave) {
+        if (string.length() > 3)
+            return DataResult.error(() -> "Keys may not be higher than 3 characters.");
+        boolean isSharp = string.length() >= 2 && string.charAt(1) == '#';
+        try {
+            KeyWithOctave keyWithOctave = new KeyWithOctave(Key.getKey(isSharp ? string.substring(0, 2) : string.substring(0, 1)), Mth.clamp(octave.orElseGet(() -> Character.getNumericValue(isSharp ? string.charAt(2) : string.charAt(1))), MIN_OCTAVE, MAX_OCTAVE));
+            return DataResult.success(keyWithOctave);
+        } catch (Exception ignored) {
+        }
+        return DataResult.error(() -> "Could not get key from '" + string + "'. Must be one of: " + Key.buildValuesString() + ", optionally with an octave ranging from 1-5 at the end.");
+    }
 
     public int getValue() {
         return key.ordinal() + ((octave - 1) * 12);
