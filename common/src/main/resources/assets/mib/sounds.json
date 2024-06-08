@@ -3,12 +3,18 @@
     "sounds": [
       "mib:instrument/eastern_trumpet/eastern_trumpet_start"
     ],
-    "subtitle": "subtitles.mib.instrument.mib.eastern_trumpet"
+    "subtitle": "subtitles.mib.instrument.eastern_trumpet"
   },
   "mib.instrument.eastern_trumpet_loop": {
     "sounds": [
       "mib:instrument/eastern_trumpet/eastern_trumpet_loop"
     ],
-    "subtitle": "subtitles.mib.instrument.mib.eastern_trumpet"
+    "subtitle": "subtitles.mib.instrument.eastern_trumpet"
+  },
+  "mib.instrument.mini_piano": {
+    "sounds": [
+      "mib:instrument/mini_piano/mini_piano"
+    ],
+    "subtitle": "subtitles.mib.instrument.mini_piano"
   }
 }

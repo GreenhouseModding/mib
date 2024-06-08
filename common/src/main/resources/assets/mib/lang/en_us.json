@@ -1,4 +1,6 @@
 {
   "item.mib.eastern_trumpet": "Eastern Trumpet",
-  "subtitles.mib.instrument.mib.eastern_trumpet": "Eastern Trumpet plays"
+  "item.mib.mini_piano": "Mini Piano",
+  "subtitles.mib.instrument.eastern_trumpet": "Eastern Trumpet plays",
+  "subtitles.mib.instrument.mini_piano": "Mini Piano plays"
 }

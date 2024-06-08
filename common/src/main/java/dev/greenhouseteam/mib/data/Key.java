@@ -37,7 +37,14 @@ public enum Key implements StringRepresentable {
             if (str.contains(key.name)) {
                 return key;
             }
-        throw new IllegalStateException("Could not find key '" + str + "'.");
+        StringBuilder builder = new StringBuilder("[ ");
+        for (int i = 0; i < Key.values().length; ++i) {
+            builder.append(", ");
+            Key key = Key.values()[i];
+            builder.append(key.getSerializedName());
+        }
+        builder.append(" ]");
+        throw new IllegalStateException("Could not find key '" + str + "'. Must be one of " + builder + ".");
     }
 
 }

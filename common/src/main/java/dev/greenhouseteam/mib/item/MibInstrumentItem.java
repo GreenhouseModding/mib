@@ -24,7 +24,7 @@ public class MibInstrumentItem extends Item {
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
         if (!stack.has(MibComponents.INSTRUMENT))
-            return 60;
+            return 40;
         return stack.get(MibComponents.INSTRUMENT).maxUseDuration();
     }
 

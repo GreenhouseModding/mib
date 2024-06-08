@@ -39,7 +39,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        if (hasPlayedLoop && (!player.isUsingItem() || player.getUseItem() != stack || ((PlayerAccess)this.player).mib$getSoundInstance() != this)) {
+        if (extendedSound.looping() && hasPlayedLoop && (!player.isUsingItem() || player.getUseItem() != stack || ((PlayerAccess)this.player).mib$getSoundInstance() != this)) {
             if (extendedSound.stopSound().isPresent())
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(extendedSound.stopSound().get().value(), this.volume, this.pitch));
             stop();
@@ -47,7 +47,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         }
 
         SoundEngineAccessor soundEngine = ((SoundEngineAccessor) ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine());
-        if (!hasPlayedLoop && soundEngine.mib$getSoundDeleteTime().containsKey(this) && soundEngine.mib$getSoundDeleteTime().get(this) - 20 + extendedSound.durationBeforeLoop() <= soundEngine.mib$tickCount()) {
+        if (extendedSound.looping() && !hasPlayedLoop && soundEngine.mib$getSoundDeleteTime().containsKey(this) && soundEngine.mib$getSoundDeleteTime().get(this) - 20 + extendedSound.durationBeforeLoop() <= soundEngine.mib$tickCount()) {
             this.hasPlayedLoop = true;
             Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(player, stack, extendedSound.loopSound().orElse(extendedSound.startSound()).value(), extendedSound, source, this.volume, this.pitch, true));
             return;

@@ -34,11 +34,15 @@ public record ItemInstrument(EitherHolder<MibSoundSet> sound, KeyWithOctave defa
     );
 
     public ItemInstrument(ResourceKey<MibSoundSet> key) {
-        this(new EitherHolder<>(key), KeyWithOctave.DEFAULT, 60);
+        this(new EitherHolder<>(key), KeyWithOctave.DEFAULT, 40);
     }
 
     public ItemInstrument(ResourceKey<MibSoundSet> key, KeyWithOctave defaultKey) {
-        this(new EitherHolder<>(key), defaultKey, 60);
+        this(new EitherHolder<>(key), defaultKey, 40);
+    }
+
+    public ItemInstrument(ResourceKey<MibSoundSet> key, int maxUseDuration) {
+        this(new EitherHolder<>(key), KeyWithOctave.DEFAULT, maxUseDuration);
     }
 
     public static InteractionResultHolder<ItemStack> playInstrument(Player player, ItemStack stack, InteractionHand hand) {
