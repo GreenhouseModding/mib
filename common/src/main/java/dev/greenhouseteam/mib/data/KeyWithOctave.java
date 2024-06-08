@@ -22,7 +22,7 @@ public record KeyWithOctave(Key key, int octave) {
 
     private static DataResult<KeyWithOctave> resultOrError(String string, Optional<Integer> octave) {
         if (string.length() > 3)
-            return DataResult.error(() -> "Keys may not be higher than 3 characters.");
+            return DataResult.error(() -> "Keys may not have more than 3 characters.");
         boolean isSharp = string.length() >= 2 && string.charAt(1) == '#';
         try {
             KeyWithOctave keyWithOctave = new KeyWithOctave(Key.getKey(isSharp ? string.substring(0, 2) : string.substring(0, 1)), Mth.clamp(octave.orElseGet(() -> Character.getNumericValue(isSharp ? string.charAt(2) : string.charAt(1))), MIN_OCTAVE, MAX_OCTAVE));
