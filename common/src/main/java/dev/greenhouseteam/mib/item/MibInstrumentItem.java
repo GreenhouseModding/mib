@@ -46,14 +46,14 @@ public class MibInstrumentItem extends Item {
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int useTicksRemaining) {
         super.releaseUsing(stack, level, entity, useTicksRemaining);
-        if (entity instanceof Player player)
+        if (entity instanceof Player player && !level.isClientSide())
             player.getCooldowns().addCooldown(stack.getItem(), Mib.getHelper().getInstrumentCooldown(stack, entity, 40));
     }
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        ItemStack newStack = super.finishUsingItem(stack, level, entity);;
-        if (entity instanceof Player player)
+        ItemStack newStack = super.finishUsingItem(stack, level, entity);
+        if (entity instanceof Player player && !level.isClientSide())
             player.getCooldowns().addCooldown(stack.getItem(), Mib.getHelper().getInstrumentCooldown(stack, entity, 40));
         return newStack;
     }
