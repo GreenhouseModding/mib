@@ -1,6 +1,7 @@
 package dev.greenhouseteam.mib.mixin.client;
 
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.ChannelAccess;
 import net.minecraft.client.sounds.SoundEngine;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -13,5 +14,8 @@ public interface SoundEngineAccessor {
     Map<SoundInstance, Integer> mib$getSoundDeleteTime();
 
     @Accessor("tickCount")
-    int mib$tickCount();
+    int mib$getTickCount();
+
+    @Accessor("instanceToChannel")
+    Map<SoundInstance, ChannelAccess.ChannelHandle> mib$getInstanceToChannel();
 }

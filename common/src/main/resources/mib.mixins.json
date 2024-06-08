@@ -7,7 +7,11 @@
     "LivingEntityMixin"
   ],
   "client": [
+    "client.HumanoidModelMixin",
     "client.PlayerMixin",
+    "client.PlayerRendererMixin",
+    "client.SoundBufferAccessor",
+    "client.SoundBufferMixin",
     "client.SoundEngineAccessor",
     "client.SoundEngineMixin",
     "client.SoundManagerAccessor"

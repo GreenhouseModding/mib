@@ -59,6 +59,10 @@ public record ItemInstrument(EitherHolder<MibSoundSet> sound, KeyWithOctave defa
         this(new EitherHolder<>(key), KeyWithOctave.DEFAULT, maxUseDuration, Optional.of(animation));
     }
 
+    public ItemInstrument(ResourceKey<MibSoundSet> key, InstrumentAnimation animation) {
+        this(new EitherHolder<>(key), KeyWithOctave.DEFAULT, 40, Optional.of(animation));
+    }
+
     public static InteractionResultHolder<ItemStack> playInstrument(Player player, ItemStack stack, InteractionHand hand) {
         if (!stack.has(MibComponents.INSTRUMENT))
             return InteractionResultHolder.pass(stack);

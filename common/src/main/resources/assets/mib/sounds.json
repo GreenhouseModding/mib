@@ -1,15 +1,27 @@
 {
+  "mib.instrument.eastern_trumpet_loop": {
+    "sounds": [
+      "mib:instrument/eastern_trumpet/eastern_trumpet_loop"
+    ],
+    "subtitle": "subtitles.mib.instrument.eastern_trumpet"
+  },
   "mib.instrument.eastern_trumpet_start": {
     "sounds": [
       "mib:instrument/eastern_trumpet/eastern_trumpet_start"
     ],
     "subtitle": "subtitles.mib.instrument.eastern_trumpet"
   },
-  "mib.instrument.eastern_trumpet_loop": {
+  "mib.instrument.flute_loop": {
     "sounds": [
-      "mib:instrument/eastern_trumpet/eastern_trumpet_loop"
+      "mib:instrument/flute/flute_loop"
     ],
-    "subtitle": "subtitles.mib.instrument.eastern_trumpet"
+    "subtitle": "subtitles.mib.instrument.flute"
+  },
+  "mib.instrument.flute_start": {
+    "sounds": [
+      "mib:instrument/flute/flute_start"
+    ],
+    "subtitle": "subtitles.mib.instrument.flute"
   },
   "mib.instrument.keyboard": {
     "sounds": [

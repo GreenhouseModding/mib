@@ -8,7 +8,15 @@ import java.util.EnumSet;
 
 public interface InstrumentAnimation  {
     @Nullable
-    UseAnim useAnim();
+    default UseAnim useAnim() {
+        return null;
+    }
 
-    EnumSet<InteractionHand> handsToSwing();
+    default EnumSet<InteractionHand> handsToSwing() {
+        return EnumSet.noneOf(InteractionHand.class);
+    }
+
+    default boolean isTwoHanded() {
+        return false;
+    }
 }

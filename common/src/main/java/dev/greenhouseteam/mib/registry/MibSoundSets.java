@@ -6,5 +6,6 @@ import net.minecraft.resources.ResourceKey;
 
 public class MibSoundSets {
     public static final ResourceKey<MibSoundSet> EASTERN_TRUMPET = ResourceKey.create(MibRegistries.SOUND_SET, Mib.asResource("eastern_trumpet"));
+    public static final ResourceKey<MibSoundSet> FLUTE = ResourceKey.create(MibRegistries.SOUND_SET, Mib.asResource("flute"));
     public static final ResourceKey<MibSoundSet> KEYBOARD = ResourceKey.create(MibRegistries.SOUND_SET, Mib.asResource("keyboard"));
 }

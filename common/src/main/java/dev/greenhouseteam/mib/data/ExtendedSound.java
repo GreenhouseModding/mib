@@ -17,18 +17,16 @@ import java.util.function.Function;
 public record ExtendedSound(Sounds sounds,
                             Optional<FloatProvider> pitch,
                             Optional<FloatRange> volumeRange,
-                            int durationBeforeLoop,
                             boolean looping) {
 
-    public ExtendedSound(Sounds sounds, int durationBeforeLoop, boolean looping) {
-        this(sounds, Optional.empty(), Optional.empty(), durationBeforeLoop, looping);
+    public ExtendedSound(Sounds sounds, boolean looping) {
+        this(sounds, Optional.empty(), Optional.empty(), looping);
     }
 
     public static final Codec<ExtendedSound> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             Sounds.CODEC.fieldOf("sounds").forGetter(ExtendedSound::sounds),
             FloatProvider.codec(0.0F, 1.0F).optionalFieldOf("pitch").forGetter(ExtendedSound::pitch),
             FloatRange.codec(0.0F, 1.0F).optionalFieldOf("volume_range").forGetter(ExtendedSound::volumeRange),
-            Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("duration_before_loop", 20).forGetter(ExtendedSound::durationBeforeLoop),
             Codec.BOOL.optionalFieldOf("loop", true).forGetter(ExtendedSound::looping)
     ).apply(inst, ExtendedSound::new));
 
@@ -39,8 +37,6 @@ public record ExtendedSound(Sounds sounds,
             ExtendedSound::pitch,
             ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatRange.codec(0.0F, 1.0F))),
             ExtendedSound::volumeRange,
-            ByteBufCodecs.INT,
-            ExtendedSound::durationBeforeLoop,
             ByteBufCodecs.BOOL,
             ExtendedSound::looping,
             ExtendedSound::new

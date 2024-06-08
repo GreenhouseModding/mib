@@ -13,9 +13,15 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MibInstrumentItem extends Item {
+    private static final List<MibInstrumentItem> INSTRUMENT_ITEMS = new ArrayList<>();
+
     public MibInstrumentItem(Properties properties) {
         super(properties);
+        INSTRUMENT_ITEMS.add(this);
     }
 
     @Override
@@ -48,5 +54,14 @@ public class MibInstrumentItem extends Item {
         if (stack.has(MibComponents.INSTRUMENT) && stack.get(MibComponents.INSTRUMENT).animation().isPresent() && stack.get(MibComponents.INSTRUMENT).animation().get().useAnim() != null)
             return stack.get(MibComponents.INSTRUMENT).animation().get().useAnim();
         return super.getUseAnimation(stack);
+    }
+
+    public static void applyCooldownToAllInstruments(Player player) {
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof MibInstrumentItem item && INSTRUMENT_ITEMS.contains(item))
+                player.getCooldowns().addCooldown(item, Mib.getHelper().getInstrumentCooldown(stack, player, 40));
+        }
+        if (player.getOffhandItem().getItem() instanceof MibInstrumentItem item && INSTRUMENT_ITEMS.contains(item))
+            player.getCooldowns().addCooldown(item, Mib.getHelper().getInstrumentCooldown(player.getOffhandItem(), player, 40));
     }
 }

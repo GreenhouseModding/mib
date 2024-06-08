@@ -1,7 +1,7 @@
 package dev.greenhouseteam.mib.network.clientbound;
 
 import dev.greenhouseteam.mib.Mib;
-import dev.greenhouseteam.mib.client.util.ClientUtil;
+import dev.greenhouseteam.mib.client.util.MibClientUtil;
 import dev.greenhouseteam.mib.data.ExtendedSound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -35,7 +35,7 @@ public record StartPlayingClientboundPacket(int entityId, boolean offhand, Exten
             if (!(entity instanceof Player player))
                 return;
             InteractionHand hand = offhand ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-            ClientUtil.queueSound(player, hand, extendedSound, volume, pitch);
+            MibClientUtil.queueSound(player, hand, extendedSound, volume, pitch);
         });
     }
 

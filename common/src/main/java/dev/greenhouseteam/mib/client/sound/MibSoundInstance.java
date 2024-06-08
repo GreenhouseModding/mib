@@ -1,9 +1,11 @@
 package dev.greenhouseteam.mib.client.sound;
 
+import com.mojang.blaze3d.audio.SoundBuffer;
 import dev.greenhouseteam.mib.access.PlayerAccess;
+import dev.greenhouseteam.mib.access.SoundBufferAccess;
+import dev.greenhouseteam.mib.client.util.MibClientUtil;
 import dev.greenhouseteam.mib.data.ExtendedSound;
-import dev.greenhouseteam.mib.mixin.client.SoundEngineAccessor;
-import dev.greenhouseteam.mib.mixin.client.SoundManagerAccessor;
+import dev.greenhouseteam.mib.mixin.client.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import javax.sound.sampled.AudioFormat;
 import java.util.function.Predicate;
 
 public class MibSoundInstance extends AbstractTickableSoundInstance implements UnrestrainedPitchSoundInstance {
@@ -23,6 +26,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
     protected final ExtendedSound extendedSound;
     protected boolean hasPlayedLoop;
     protected boolean shouldPlayStopSound;
+    protected int startLoopTicks = Integer.MIN_VALUE;
 
     public MibSoundInstance(double x, double y, double z, SoundEvent sound,
                             ExtendedSound extendedSound, SoundSource source,
@@ -58,14 +62,14 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
     @Override
     public void tick() {
         SoundEngineAccessor soundEngine = ((SoundEngineAccessor) ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine());
-        if (!hasPlayedLoop && soundEngine.mib$getSoundDeleteTime().containsKey(this) && soundEngine.mib$getSoundDeleteTime().get(this) - 20 + extendedSound.durationBeforeLoop() <= soundEngine.mib$tickCount()) {
+        if (!hasPlayedLoop && getOrCalculateStartSoundStop() <= soundEngine.mib$getTickCount() && extendedSound.sounds().loop().isPresent()) {
             hasPlayedLoop = true;
             shouldPlayStopSound = false;
-            Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().loop().orElse(extendedSound.sounds().start()).value(), extendedSound, source, volume, pitch, true));
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, source, volume, pitch, true));
         }
 
-        if ((!hasPlayedLoop && soundEngine.mib$getSoundDeleteTime().get(this) - 1 <= soundEngine.mib$tickCount()) || hasPlayedLoop && shouldPlayStopSound && (soundEngine.mib$getSoundDeleteTime().get(this) - 1 <= soundEngine.mib$tickCount() || player != null && stopPredicate.test(player) || player != null && ((PlayerAccess)player).mib$getSoundInstance() != this)) {
-            if (extendedSound.sounds().stop().isPresent())
+        if (!hasPlayedLoop && getOrCalculateStartSoundStop() <= soundEngine.mib$getTickCount() || (hasPlayedLoop && player != null && stopPredicate.test(player))) {
+            if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent())
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(extendedSound.sounds().stop().get().value(), this.volume, this.pitch));
             ((PlayerAccess)player).mib$setCurrentSoundInstance(null);
             stop();
@@ -77,5 +81,22 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
             this.y = player.getY();
             this.z = player.getZ();
         }
+    }
+
+    protected int getOrCalculateStartSoundStop() {
+        if (startLoopTicks != Integer.MIN_VALUE)
+            return startLoopTicks;
+
+        SoundEngineAccessor soundEngine = ((SoundEngineAccessor) ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine());
+        if (!soundEngine.mib$getInstanceToChannel().containsKey(this))
+            return 0;
+        SoundBuffer buffer = MibClientUtil.getSoundBuffer();
+        if (buffer == null)
+            return Integer.MAX_VALUE;
+        AudioFormat format = ((SoundBufferAccessor)buffer).mib$getFormat();
+        float nonTickValue = (((SoundBufferAccess)buffer).mib$getData().capacity() / format.getFrameSize()) / format.getFrameRate();
+        startLoopTicks = soundEngine.mib$getSoundDeleteTime().get(this) - 20 + (int) (nonTickValue * 20 / pitch);
+        MibClientUtil.clearSoundBuffer();
+        return startLoopTicks;
     }
 }

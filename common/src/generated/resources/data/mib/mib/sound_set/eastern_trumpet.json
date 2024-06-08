@@ -2,7 +2,6 @@
   "sounds": {
     "c3": [
       {
-        "duration_before_loop": 13,
         "sounds": {
           "loop": "mib:mib.instrument.eastern_trumpet_loop",
           "start": "mib:mib.instrument.eastern_trumpet_start"
