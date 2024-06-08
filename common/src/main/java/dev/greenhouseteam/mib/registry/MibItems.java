@@ -11,10 +11,10 @@ import net.minecraft.world.item.Item;
 
 public class MibItems {
     public static final Item EASTERN_TRUMPET = new MibInstrumentItem(new Item.Properties().component(MibComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.EASTERN_TRUMPET, new KeyWithOctave(Key.G_SHARP, 3))));
-    public static final Item MINI_PIANO = new MibInstrumentItem(new Item.Properties().component(MibComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.MINI_PIANO, 1)));
+    public static final Item KEYBOARD = new MibInstrumentItem(new Item.Properties().component(MibComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.KEYBOARD, 1)));
 
     public static void registerAll(RegistrationCallback<Item> callback) {
         callback.register(BuiltInRegistries.ITEM, Mib.asResource("eastern_trumpet"), EASTERN_TRUMPET);
-        callback.register(BuiltInRegistries.ITEM, Mib.asResource("mini_piano"), MINI_PIANO);
+        callback.register(BuiltInRegistries.ITEM, Mib.asResource("keyboard"), KEYBOARD);
     }
 }

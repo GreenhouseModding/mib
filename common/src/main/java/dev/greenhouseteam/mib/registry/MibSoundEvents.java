@@ -8,11 +8,11 @@ import net.minecraft.sounds.SoundEvent;
 public class MibSoundEvents {
     public static final SoundEvent EASTERN_TRUMPET_START = SoundEvent.createVariableRangeEvent(Mib.asResource("mib.instrument.eastern_trumpet_start"));
     public static final SoundEvent EASTERN_TRUMPET_LOOP = SoundEvent.createVariableRangeEvent(Mib.asResource("mib.instrument.eastern_trumpet_loop"));
-    public static final SoundEvent MINI_PIANO = SoundEvent.createVariableRangeEvent(Mib.asResource("mib.instrument.mini_piano"));
+    public static final SoundEvent KEYBOARD = SoundEvent.createVariableRangeEvent(Mib.asResource("mib.instrument.keyboard"));
 
     public static void registerAll(RegistrationCallback<SoundEvent> callback) {
         callback.register(BuiltInRegistries.SOUND_EVENT, Mib.asResource("mib.instrument.eastern_trumpet_start"), EASTERN_TRUMPET_START);
         callback.register(BuiltInRegistries.SOUND_EVENT, Mib.asResource("mib.instrument.eastern_trumpet_loop"), EASTERN_TRUMPET_LOOP);
-        callback.register(BuiltInRegistries.SOUND_EVENT, Mib.asResource("mib.instrument.mini_piano"), MINI_PIANO);
+        callback.register(BuiltInRegistries.SOUND_EVENT, Mib.asResource("mib.instrument.keyboard"), KEYBOARD);
     }
 }

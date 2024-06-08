@@ -4,7 +4,7 @@
       {
         "duration_before_loop": 0,
         "loop": false,
-        "start_sound": "mib:mib.instrument.mini_piano"
+        "start_sound": "mib:mib.instrument.keyboard"
       }
     ]
   }

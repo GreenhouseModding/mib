@@ -11,10 +11,10 @@
     ],
     "subtitle": "subtitles.mib.instrument.eastern_trumpet"
   },
-  "mib.instrument.mini_piano": {
+  "mib.instrument.keyboard": {
     "sounds": [
-      "mib:instrument/mini_piano/mini_piano"
+      "mib:instrument/keyboard"
     ],
-    "subtitle": "subtitles.mib.instrument.mini_piano"
+    "subtitle": "subtitles.mib.instrument.keyboard"
   }
 }

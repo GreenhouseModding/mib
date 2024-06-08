@@ -34,7 +34,7 @@ public class MibDatagen implements DataGeneratorEntrypoint {
         @SuppressWarnings("unchecked")
         protected void configure(HolderLookup.Provider registries, Entries entries) {
             entries.add(MibSoundSets.EASTERN_TRUMPET, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.EASTERN_TRUMPET_START).orElseThrow()), BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.EASTERN_TRUMPET_LOOP).orElseThrow()), 13,  true)))));
-            entries.add(MibSoundSets.MINI_PIANO, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.MINI_PIANO).orElseThrow()), 0,  false)))));
+            entries.add(MibSoundSets.KEYBOARD, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.KEYBOARD).orElseThrow()), 0,  false)))));
         }
 
         @Override
