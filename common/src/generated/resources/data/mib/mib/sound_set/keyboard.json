@@ -2,7 +2,6 @@
   "sounds": {
     "c3": [
       {
-        "loop": false,
         "sounds": {
           "start": "mib:mib.instrument.keyboard"
         }

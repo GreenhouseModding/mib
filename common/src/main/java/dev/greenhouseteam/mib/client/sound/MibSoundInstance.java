@@ -23,25 +23,27 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
     protected final Predicate<Player> stopPredicate;
     protected final ExtendedSound extendedSound;
     protected boolean hasPlayedLoop;
+    protected boolean shouldFade;
     protected boolean shouldPlayStopSound;
+    protected float initialVolume;
     protected int startLoopTicks = Integer.MIN_VALUE;
 
     public MibSoundInstance(double x, double y, double z, SoundEvent sound,
                             ExtendedSound extendedSound, SoundSource source,
-                            float volume, float pitch, boolean isLooping) {
-        this(null, x, y, z, p -> true, sound, extendedSound, source, volume, pitch, isLooping, true);
+                            float volume, float pitch, boolean isLooping, boolean shouldFade) {
+        this(null, x, y, z, p -> true, sound, extendedSound, source, volume, pitch, isLooping, true, shouldFade);
     }
 
     public MibSoundInstance(Player player, ItemStack stack, SoundEvent sound,
                             ExtendedSound extendedSound, SoundSource source,
-                            float volume, float pitch, boolean isLooping) {
-        this(player, player.getX(), player.getY(), player.getZ(), p -> !p.isUsingItem() || p.getUseItem() != stack, sound, extendedSound, source, volume, pitch, isLooping, true);
+                            float volume, float pitch, boolean isLooping, boolean shouldFade) {
+        this(player, player.getX(), player.getY(), player.getZ(), p -> !p.isUsingItem() || p.getUseItem() != stack, sound, extendedSound, source, volume, pitch, isLooping, true, shouldFade);
     }
 
     protected MibSoundInstance(@Nullable Player player, double x, double y, double z, Predicate<Player> stopPredicate, SoundEvent sound,
                             ExtendedSound extendedSound, SoundSource source,
                             float volume, float pitch, boolean isLooping,
-                            boolean shouldPlayLoopSound) {
+                            boolean shouldPlayLoopSound, boolean shouldFade) {
         super(sound, source, SoundInstance.createUnseededRandom());
         this.player = player;
         this.x = x;
@@ -50,10 +52,12 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
         this.stopPredicate = stopPredicate;
         this.extendedSound = extendedSound;
         this.volume = volume;
+        this.initialVolume = volume;
         this.pitch = pitch;
         this.looping = isLooping;
         this.hasPlayedLoop = !shouldPlayLoopSound;
         this.shouldPlayStopSound = true;
+        this.shouldFade = shouldFade;
     }
 
     @Override
@@ -65,7 +69,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
 
         if (hasPlayedLoop && player != null && stopPredicate.test(player)) {
             if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent())
-                Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, source, this.volume, this.pitch, false, false));
+                Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, source, this.volume, this.pitch, false, false, false));
             stop();
             return;
         }
@@ -73,7 +77,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
         if (!hasPlayedLoop && getOrCalculateStartSoundStop() <= soundEngine.mib$getTickCount() && extendedSound.sounds().loop().isPresent()) {
             hasPlayedLoop = true;
             shouldPlayStopSound = false;
-            Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, source, volume, pitch, true, false));
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, source, volume, pitch, true, false, true));
             return;
         }
 
@@ -82,6 +86,9 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
             this.y = player.getY();
             this.z = player.getZ();
         }
+
+        if (shouldFade && extendedSound.fadeSpeed().isPresent())
+            volume = Math.clamp(volume - (extendedSound.fadeSpeed().get().sample(random) * pitch * initialVolume), 0.0F, 1.0F);
     }
 
     protected int getOrCalculateStartSoundStop() {
@@ -95,7 +102,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
         if (buffer == null)
             return Integer.MAX_VALUE;
         AudioFormat format = ((SoundBufferAccessor)buffer).mib$getFormat();
-        float nonTickValue = (((SoundBufferAccess)buffer).mib$getData().capacity() / format.getFrameSize()) / format.getFrameRate();
+        float nonTickValue = ((float)((SoundBufferAccess)buffer).mib$getData().capacity() / format.getFrameSize()) / format.getFrameRate();
         startLoopTicks = soundEngine.mib$getTickCount() + (int) (nonTickValue * 20 / pitch) - 2;
         MibClientUtil.clearSoundBuffer();
         return startLoopTicks;

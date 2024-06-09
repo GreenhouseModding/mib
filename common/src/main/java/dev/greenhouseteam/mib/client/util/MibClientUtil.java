@@ -30,6 +30,7 @@ public class MibClientUtil {
                 player.getSoundSource(),
                 volume,
                 pitch,
+                false,
                 false)
         );
     }
@@ -38,26 +39,15 @@ public class MibClientUtil {
         return stack.getItem() instanceof MibInstrumentItem && stack.has(MibComponents.INSTRUMENT) && entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
     }
 
-    public static boolean poseMainArm(AbstractClientPlayer player, ItemStack stack, boolean left, ModelPart part, HumanoidModel<AbstractClientPlayer> model) {
+    public static boolean poseArms(AbstractClientPlayer player, ItemStack stack, boolean left, ModelPart mainArm, ModelPart offArm, HumanoidModel<AbstractClientPlayer> model) {
         if (stack.has(MibComponents.INSTRUMENT) && player.isUsingItem() && player.getUseItem() == stack) {
             ItemInstrument component = stack.get(MibComponents.INSTRUMENT);
             if (component.animation().isPresent() && component.animation().get() instanceof FluteInstrumentAnimation) {
                 // TODO: Test this.
-                part.xRot = Mth.clamp(model.head.xRot, -1.2F, 1.2F) - 1.65F;
-                part.yRot = (float) (model.head.yRot + (left ? Math.PI / 6.0F : -Math.PI / 6.0F));
-                return true;
-            }
-        }
-
-        return false;
-    }
-    public static boolean poseOffArm(AbstractClientPlayer player, ItemStack stack, boolean left, ModelPart part, HumanoidModel<AbstractClientPlayer> model) {
-        if (stack.has(MibComponents.INSTRUMENT) && player.isUsingItem() && player.getUseItem() == stack) {
-            ItemInstrument component = stack.get(MibComponents.INSTRUMENT);
-            if (component.animation().isPresent() && component.animation().get() instanceof FluteInstrumentAnimation) {
-                // TODO: Test this.
-                part.xRot = Mth.clamp(model.head.xRot, -1.2F, 1.2F) - 1.65F;
-                part.yRot = (float) (model.head.yRot + (left ? Math.PI / 6.0F : -Math.PI / 6.0F));
+                mainArm.xRot = Mth.clamp(model.head.xRot, -1.2F, 1.2F) - 1.65F;
+                mainArm.yRot = (float) (model.head.yRot + (left ? Math.PI / 6.0F : -Math.PI / 6.0F));
+                offArm.xRot = Mth.clamp(model.head.xRot, -1.2F, 1.2F) - 1.75F;
+                offArm.yRot = (float) (model.head.yRot + (left ? Math.PI / 16.0F : -Math.PI / 16.0F));
                 return true;
             }
         }

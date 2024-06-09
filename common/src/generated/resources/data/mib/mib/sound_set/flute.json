@@ -2,6 +2,7 @@
   "sounds": {
     "c3": [
       {
+        "fade_speed": 0.017,
         "sounds": {
           "loop": "mib:mib.instrument.flute_loop",
           "start": "mib:mib.instrument.flute_start"

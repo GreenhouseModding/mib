@@ -17,17 +17,21 @@ import java.util.function.Function;
 public record ExtendedSound(Sounds sounds,
                             Optional<FloatProvider> pitch,
                             Optional<FloatRange> volumeRange,
-                            boolean looping) {
+                            Optional<FloatProvider> fadeSpeed) {
 
-    public ExtendedSound(Sounds sounds, boolean looping) {
-        this(sounds, Optional.empty(), Optional.empty(), looping);
+    public ExtendedSound(Sounds sounds) {
+        this(sounds, Optional.empty(), Optional.empty(), Optional.empty());
+    }
+
+    public ExtendedSound(Sounds sounds, FloatProvider fadeSpeed) {
+        this(sounds, Optional.empty(), Optional.empty(), Optional.of(fadeSpeed));
     }
 
     public static final Codec<ExtendedSound> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             Sounds.CODEC.fieldOf("sounds").forGetter(ExtendedSound::sounds),
             FloatProvider.codec(0.0F, 1.0F).optionalFieldOf("pitch").forGetter(ExtendedSound::pitch),
             FloatRange.codec(0.0F, 1.0F).optionalFieldOf("volume_range").forGetter(ExtendedSound::volumeRange),
-            Codec.BOOL.optionalFieldOf("loop", true).forGetter(ExtendedSound::looping)
+            FloatProvider.codec(0.0F, 1.0F).optionalFieldOf("fade_speed").forGetter(ExtendedSound::fadeSpeed)
     ).apply(inst, ExtendedSound::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ExtendedSound> STREAM_CODEC = StreamCodec.composite(
@@ -37,8 +41,8 @@ public record ExtendedSound(Sounds sounds,
             ExtendedSound::pitch,
             ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatRange.codec(0.0F, 1.0F))),
             ExtendedSound::volumeRange,
-            ByteBufCodecs.BOOL,
-            ExtendedSound::looping,
+            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatProvider.CODEC)),
+            ExtendedSound::fadeSpeed,
             ExtendedSound::new
     );
 

@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,9 +33,9 @@ public class MibDatagen implements DataGeneratorEntrypoint {
 
         @Override
         protected void configure(HolderLookup.Provider registries, Entries entries) {
-            entries.add(MibSoundSets.FANTASY_TRUMPET, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(new ExtendedSound.Sounds(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FANTASY_TRUMPET_START).orElseThrow()), BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FANTASY_TRUMPET_LOOP).orElseThrow())), true)))));
-            entries.add(MibSoundSets.FLUTE, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(new ExtendedSound.Sounds(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FLUTE_START).orElseThrow()), BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FLUTE_LOOP).orElseThrow())),  true)))));
-            entries.add(MibSoundSets.KEYBOARD, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(new ExtendedSound.Sounds(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.KEYBOARD).orElseThrow())),  false)))));
+            entries.add(MibSoundSets.FANTASY_TRUMPET, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(new ExtendedSound.Sounds(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FANTASY_TRUMPET_START).orElseThrow()), BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FANTASY_TRUMPET_LOOP).orElseThrow())))))));
+            entries.add(MibSoundSets.FLUTE, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(new ExtendedSound.Sounds(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FLUTE_START).orElseThrow()), BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.FLUTE_LOOP).orElseThrow())), ConstantFloat.of(0.017F))))));
+            entries.add(MibSoundSets.KEYBOARD, new MibSoundSet(Map.of(KeyWithOctave.DEFAULT, List.of(new ExtendedSound(new ExtendedSound.Sounds(BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(BuiltInRegistries.SOUND_EVENT.getResourceKey(MibSoundEvents.KEYBOARD).orElseThrow())))))));
         }
 
         @Override
