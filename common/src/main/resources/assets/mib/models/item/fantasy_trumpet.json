@@ -30,7 +30,7 @@
       "predicate": {
         "mib:playing": 1
       },
-      "model": "mib:item/tooting_eastern_trumpet"
+      "model": "mib:item/tooting_fantasy_trumpet"
     }
   ]
 }
