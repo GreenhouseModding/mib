@@ -10,7 +10,7 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,8 +19,8 @@ import java.util.function.Predicate;
 
 public class MibSoundInstance extends AbstractTickableSoundInstance implements UnrestrainedPitchSoundInstance {
     @Nullable
-    protected final Player player;
-    protected final Predicate<Player> stopPredicate;
+    protected final LivingEntity living;
+    protected final Predicate<LivingEntity> stopPredicate;
     protected final ExtendedSound extendedSound;
     protected boolean hasPlayedLoop;
     protected boolean shouldFade;
@@ -28,23 +28,24 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
     protected float initialVolume;
     protected int startLoopTicks = Integer.MIN_VALUE;
 
-    public MibSoundInstance(double x, double y, double z, SoundEvent sound,
-                            ExtendedSound extendedSound, float volume, float pitch, boolean isLooping, boolean shouldFade) {
+    public MibSoundInstance(double x, double y, double z,
+                            SoundEvent sound, ExtendedSound extendedSound,
+                            float volume, float pitch, boolean isLooping, boolean shouldFade) {
         this(null, x, y, z, p -> true, sound, extendedSound, volume, pitch, isLooping, true, shouldFade);
     }
 
-    public MibSoundInstance(Player player, ItemStack stack, SoundEvent sound,
-                            ExtendedSound extendedSound,
+    public MibSoundInstance(LivingEntity living, ItemStack stack,
+                            SoundEvent sound, ExtendedSound extendedSound,
                             float volume, float pitch, boolean isLooping, boolean shouldFade) {
-        this(player, player.getX(), player.getY(), player.getZ(), p -> !p.isUsingItem() || p.getUseItem() != stack, sound, extendedSound, volume, pitch, isLooping, true, shouldFade);
+        this(living, living.getX(), living.getY(), living.getZ(), p -> !p.isUsingItem() || p.getUseItem() != stack, sound, extendedSound, volume, pitch, isLooping, true, shouldFade);
     }
 
-    public MibSoundInstance(@Nullable Player player, double x, double y, double z, Predicate<Player> stopPredicate, SoundEvent sound,
-                            ExtendedSound extendedSound,
+    public MibSoundInstance(@Nullable LivingEntity living, double x, double y, double z, Predicate<LivingEntity> stopPredicate,
+                            SoundEvent sound, ExtendedSound extendedSound,
                             float volume, float pitch, boolean isLooping,
                             boolean shouldPlayLoopSound, boolean shouldFade) {
         super(sound, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
-        this.player = player;
+        this.living = living;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -66,9 +67,9 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
 
         SoundEngineAccessor soundEngine = ((SoundEngineAccessor) ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine());
 
-        if (hasPlayedLoop && player != null && stopPredicate.test(player)) {
+        if (hasPlayedLoop && living != null && stopPredicate.test(living)) {
             if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent())
-                Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, this.volume, this.pitch, false, false, false));
+                Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false));
             stop();
             return;
         }
@@ -76,14 +77,14 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
         if (!hasPlayedLoop && getOrCalculateStartSoundStop() <= soundEngine.mib$getTickCount() && extendedSound.sounds().loop().isPresent()) {
             hasPlayedLoop = true;
             shouldPlayStopSound = false;
-            Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(player, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false, true));
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false, true));
             return;
         }
 
-        if (player != null) {
-            this.x = player.getX();
-            this.y = player.getY();
-            this.z = player.getZ();
+        if (living != null) {
+            this.x = living.getX();
+            this.y = living.getY();
+            this.z = living.getZ();
         }
 
         if (shouldFade && extendedSound.fadeSpeed().isPresent())
