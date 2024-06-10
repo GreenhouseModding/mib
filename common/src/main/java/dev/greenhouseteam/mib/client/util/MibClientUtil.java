@@ -18,8 +18,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.nio.ByteBuffer;
-
 public class MibClientUtil {
     public static void queueSound(Player player, InteractionHand hand, ExtendedSound extendedSound, float volume, float pitch) {
         Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(
@@ -27,7 +25,6 @@ public class MibClientUtil {
                 player.getItemInHand(hand),
                 extendedSound.sounds().start().value(),
                 extendedSound,
-                player.getSoundSource(),
                 volume,
                 pitch,
                 false,
