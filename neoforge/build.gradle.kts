@@ -5,7 +5,7 @@ import org.apache.tools.ant.filters.LineContains
 
 plugins {
     id("mib.loader")
-    id("net.neoforged.gradle.userdev") version "7.0.138"
+    id("net.neoforged.gradle.userdev") version "7.0.142"
 }
 
 val at = file("src/main/resources/${Properties.MOD_ID}.cfg")
@@ -27,6 +27,16 @@ runs {
     create("client") {}
     create("server") {
         programArgument("--nogui")
+    }
+}
+
+repositories {
+    maven("https://prmaven.neoforged.net/NeoForge/pr1076") {
+        name = "Maven for PR #1076" // https://github.com/neoforged/NeoForge/pull/1076
+        content {
+            includeModule("net.neoforged", "testframework")
+            includeModule("net.neoforged", "neoforge")
+        }
     }
 }
 

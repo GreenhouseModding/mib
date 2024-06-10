@@ -1,4 +1,4 @@
-package dev.greenhouseteam.mib.mixin.client;
+package dev.greenhouseteam.mib.mixin.neoforge.client;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.audio.Channel;
@@ -33,8 +33,8 @@ public class SoundEngineMixin {
         mib$shouldCaptureBuffer = instance instanceof MibSoundInstance;
     }
 
-    @Inject(method = { "method_19752", "lambda$play$6" }, at = @At("HEAD"))
-    private static void captureSoundBuffer(SoundBuffer buffer, Channel channel, CallbackInfo ci) {
+    @Inject(method = { "lambda$play$6" }, at = @At("HEAD"))
+    private void captureSoundBuffer(SoundBuffer buffer, SoundInstance instance, Channel channel, CallbackInfo ci) {
         if (mib$shouldCaptureBuffer)
             MibClientUtil.captureSoundBuffer(buffer);
     }

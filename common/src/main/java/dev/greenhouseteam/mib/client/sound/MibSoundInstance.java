@@ -60,6 +60,8 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
         this.shouldFade = shouldFade;
     }
 
+
+
     @Override
     public void tick() {
         if (isStopped())

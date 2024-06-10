@@ -22,5 +22,5 @@ plugins {
 rootProject.name = "mib"
 include("common")
 include("fabric")
-// include("neoforge")
+include("neoforge")
 // include("publish")

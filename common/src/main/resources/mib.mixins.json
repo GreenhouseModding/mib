@@ -14,7 +14,6 @@
     "client.SoundBufferAccessor",
     "client.SoundBufferMixin",
     "client.SoundEngineAccessor",
-    "client.SoundEngineMixin",
     "client.SoundManagerAccessor"
   ],
   "injectors": {

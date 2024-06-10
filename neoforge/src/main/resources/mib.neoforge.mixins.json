@@ -1,9 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "dev.greenhouseteam.mib.mixin",
+  "package": "dev.greenhouseteam.mib.mixin.neoforge",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
+  "client": [
+    "client.SoundEngineMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
