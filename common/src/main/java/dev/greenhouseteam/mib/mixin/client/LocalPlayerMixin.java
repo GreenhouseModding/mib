@@ -21,7 +21,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
     @Shadow public abstract boolean isUsingItem();
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
-    private boolean mib$should(boolean original) {
+    private boolean mib$preventSlowdownOnInstrumentUsingPlayer(boolean original) {
         if (isUsingItem() && getUseItem().getItem() instanceof MibInstrumentItem &&
                 getUseItem().has(MibComponents.INSTRUMENT))
             return Mib.getHelper().shouldApplyUseSlowness(getUseItem(), this, false);
