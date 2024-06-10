@@ -56,6 +56,11 @@ public class MibPlatformHelperFabric implements MibPlatformHelper {
     }
 
     @Override
+    public boolean shouldApplyUseSlowness(ItemStack stack, LivingEntity entity, boolean original) {
+        return MibInstrumentEvents.APPLY_USAGE_SLOWNESS.invoker().shouldApplySlownessOnUse(stack, entity, original);
+    }
+
+    @Override
     public void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity) {
         Collection<ServerPlayer> players = PlayerLookup.tracking(entity);
         for (ServerPlayer other : players) {

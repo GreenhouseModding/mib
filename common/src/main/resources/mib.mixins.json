@@ -9,6 +9,7 @@
   "client": [
     "client.HumanoidModelMixin",
     "client.ItemInHandRendererMixin",
+    "client.LocalPlayerMixin",
     "client.PlayerRendererMixin",
     "client.SoundBufferAccessor",
     "client.SoundBufferMixin",

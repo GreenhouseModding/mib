@@ -7,6 +7,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class MibInstrumentEvents {
+    public static final Event<ApplyUsageSlownessCallback> APPLY_USAGE_SLOWNESS = EventFactory.createArrayBacked(ApplyUsageSlownessCallback.class, (listeners) ->  (stack, entity, original) -> {
+        boolean current = original;
+        for (ApplyUsageSlownessCallback listener : listeners)
+            current = listener.shouldApplySlownessOnUse(stack, entity, current);
+        return false;
+    });
+
     public static final Event<CooldownCallback> COOLDOWN = EventFactory.createArrayBacked(CooldownCallback.class, (listeners) ->  (stack, entity, original) -> {
         for (CooldownCallback listener : listeners)
             if (listener.getCooldown(stack, entity, original) != original)
@@ -21,15 +28,20 @@ public class MibInstrumentEvents {
     });
 
     public static final Event<UseDurationCallback> USE_DURATION = EventFactory.createArrayBacked(UseDurationCallback.class, (listeners) ->  (stack, entity, original) -> {
+        int current = original;
         for (UseDurationCallback listener : listeners)
-            if (listener.getUseDuration(stack, entity, original) != original)
-                return listener.getUseDuration(stack, entity, original);
-        return original;
+                current = listener.getUseDuration(stack, entity, current);
+        return current;
     });
 
     @FunctionalInterface
+    public interface ApplyUsageSlownessCallback {
+        boolean shouldApplySlownessOnUse(ItemStack stack, LivingEntity entity, boolean current);
+    }
+
+    @FunctionalInterface
     public interface CooldownCallback {
-        int getCooldown(ItemStack stack, LivingEntity entity, int original);
+        int getCooldown(ItemStack stack, LivingEntity entity, int current);
     }
 
     @FunctionalInterface
@@ -45,11 +57,9 @@ public class MibInstrumentEvents {
          *
          * @param stack     The instrument stack.
          * @param entity    The entity using the instrument.
-         * @param original  The original use duration.
-         * @return          A new use duration, return the original if you
-         *                  don't want to cancel. I'd advise mixins if you need
-         *                  to modify on a non cancelling level.
+         * @param current  The current use duration, may be modified by another mod.
+         * @return          A new use duration, return current if you don't want to modify.
          */
-        int getUseDuration(ItemStack stack, LivingEntity entity, int original);
+        int getUseDuration(ItemStack stack, LivingEntity entity, int current);
     }
 }

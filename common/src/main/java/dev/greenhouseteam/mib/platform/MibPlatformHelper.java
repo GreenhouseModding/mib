@@ -50,5 +50,7 @@ public interface MibPlatformHelper {
 
     int getInstrumentUseDuration(ItemStack stack, LivingEntity entity, int original);
 
+    boolean shouldApplyUseSlowness(ItemStack stack, LivingEntity entity, boolean original);
+
     void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity);
 }
