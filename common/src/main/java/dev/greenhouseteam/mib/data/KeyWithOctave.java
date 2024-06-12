@@ -44,6 +44,17 @@ public record KeyWithOctave(Key key, int octave) {
         return (float)Math.pow(2.0, (((double)getValue()) - startingKey.getValue()) / 12);
     }
 
+    public static KeyWithOctave fromInt(int value) {
+        int currentOctave = 1;
+        for (int i = 0; i < Key.values().length * 5; ++i) {
+            if (i == value)
+                return new KeyWithOctave(Key.values()[i % 12], currentOctave);
+            if (i % 12 == 11)
+                ++currentOctave;
+        }
+        throw new RuntimeException("Int must be within a range of 0-55.");
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof KeyWithOctave other))
