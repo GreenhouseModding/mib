@@ -162,27 +162,6 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if ((!(obj instanceof MibSoundInstance inst)))
-            return false;
-        if (inst.sound == null)
-            return sound == null;
-        return inst.sound.equals(sound) && inst.extendedSound.equals(extendedSound) && compareFloats(inst.pitch, pitch);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sound, extendedSound, pitch);
-    }
-
-    private boolean compareFloats(float a, float b) {
-        float diff = Math.abs(a - b);
-        return diff < 0.0001F;
-    }
-
-    @Override
     public void tick() {
         // No-op
     }
