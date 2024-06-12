@@ -7,9 +7,11 @@
     "LivingEntityMixin"
   ],
   "client": [
+    "client.AbstractTickableSoundInstanceAccessor",
     "client.HumanoidModelMixin",
     "client.ItemInHandRendererMixin",
     "client.LocalPlayerMixin",
+    "client.MinecraftMixin",
     "client.PlayerRendererMixin",
     "client.SoundBufferAccessor",
     "client.SoundBufferMixin",

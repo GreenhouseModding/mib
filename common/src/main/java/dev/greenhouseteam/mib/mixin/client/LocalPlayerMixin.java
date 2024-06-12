@@ -27,4 +27,12 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
             return Mib.getHelper().shouldApplyUseSlowness(getUseItem(), this, false);
         return original;
     }
+
+    @ModifyExpressionValue(method = "canStartSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
+    private boolean mib$allowSprintStartOnInstrumentUsingPlayer(boolean original) {
+        if (isUsingItem() && getUseItem().getItem() instanceof MibInstrumentItem &&
+                getUseItem().has(MibComponents.INSTRUMENT))
+            return Mib.getHelper().shouldApplyUseSlowness(getUseItem(), this, false);
+        return original;
+    }
 }

@@ -1,49 +1,45 @@
 package dev.greenhouseteam.mib.client.sound;
 
+import com.mojang.blaze3d.audio.Channel;
 import com.mojang.blaze3d.audio.SoundBuffer;
 import dev.greenhouseteam.mib.access.SoundBufferAccess;
 import dev.greenhouseteam.mib.client.util.MibClientUtil;
 import dev.greenhouseteam.mib.data.ExtendedSound;
 import dev.greenhouseteam.mib.mixin.client.*;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundEngine;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import javax.sound.sampled.AudioFormat;
+import java.util.Objects;
 import java.util.function.Predicate;
 
-public class MibSoundInstance extends AbstractTickableSoundInstance implements UnrestrainedPitchSoundInstance {
+public class MibSoundInstance extends AbstractTickableSoundInstance {
     @Nullable
     protected final LivingEntity living;
     protected final Predicate<LivingEntity> stopPredicate;
     protected final ExtendedSound extendedSound;
     protected boolean hasPlayedLoop;
-    protected boolean shouldFade;
-    protected boolean shouldPlayStopSound;
+    protected boolean shouldFade = false;
+    protected boolean shouldPlayStopSound = true;
     protected float initialVolume;
-    protected int startLoopTicks = Integer.MIN_VALUE;
+    protected float tickDuration = Float.MAX_VALUE;
 
-    public MibSoundInstance(double x, double y, double z,
-                            SoundEvent sound, ExtendedSound extendedSound,
-                            float volume, float pitch, boolean isLooping, boolean shouldFade) {
-        this(null, x, y, z, p -> true, sound, extendedSound, volume, pitch, isLooping, true, shouldFade);
-    }
+    private SoundBuffer buffer;
 
-    public MibSoundInstance(LivingEntity living, ItemStack stack,
-                            SoundEvent sound, ExtendedSound extendedSound,
-                            float volume, float pitch, boolean isLooping, boolean shouldFade) {
-        this(living, living.getX(), living.getY(), living.getZ(), p -> !p.isUsingItem() || p.getUseItem() != stack, sound, extendedSound, volume, pitch, isLooping, true, shouldFade);
-    }
-
-    public MibSoundInstance(@Nullable LivingEntity living, double x, double y, double z, Predicate<LivingEntity> stopPredicate,
+    protected MibSoundInstance(@Nullable LivingEntity living, double x, double y, double z, Predicate<LivingEntity> stopPredicate,
                             SoundEvent sound, ExtendedSound extendedSound,
                             float volume, float pitch, boolean isLooping,
-                            boolean shouldPlayLoopSound, boolean shouldFade) {
+                            boolean shouldPlayLoopSound) {
         super(sound, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
         this.living = living;
         this.x = x;
@@ -56,31 +52,53 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
         this.pitch = pitch;
         this.looping = isLooping;
         this.hasPlayedLoop = !shouldPlayLoopSound;
-        this.shouldPlayStopSound = true;
-        this.shouldFade = shouldFade;
     }
 
+    public static MibSoundInstance createBlockPosDependent(Vec3 pos, ExtendedSound extendedSound, float volume, float pitch) {
+        return new MibSoundInstance(null, pos.x, pos.y, pos.z,
+                p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true);
+    }
 
+    public static MibSoundInstance createPosDependent(BlockPos blockPos, ExtendedSound extendedSound, float volume, float pitch) {
+        Vec3 pos = blockPos.getCenter();
+        return new MibSoundInstance(null, pos.x, pos.y, pos.z,
+                p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true);
+    }
 
-    @Override
-    public void tick() {
-        if (isStopped())
-            return;
+    public static MibSoundInstance createEntityDependent(LivingEntity living, ItemStack stack,
+                                                  ExtendedSound extendedSound,
+                                                  float volume, float pitch) {
+        return new MibSoundInstance(living, living.getX(), living.getY(), living.getZ(),
+                p -> !p.isUsingItem() || p.getUseItem() != stack, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true);
+    }
 
-        SoundEngineAccessor soundEngine = ((SoundEngineAccessor) ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine());
+    public void bypassingTick(long ticks, DeltaTracker delta) {
+        if (hasPlayedLoop && living != null && stopPredicate.test(living) && !shouldFade) {
+            if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent()) {
+                var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false);
+                Minecraft.getInstance().getSoundManager().play(instance);
+            }
 
-        if (hasPlayedLoop && living != null && stopPredicate.test(living)) {
-            if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent())
-                Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false));
-            stop();
+            if (extendedSound.fadeSpeed().isPresent())
+                shouldFade = true;
+            else
+                stopAndClear();
             return;
         }
 
-        if (!hasPlayedLoop && getOrCalculateStartSoundStop() <= soundEngine.mib$getTickCount() && extendedSound.sounds().loop().isPresent()) {
+        if (!hasPlayedLoop && (extendedSound.fadeSpeed().isPresent() || living == null || !stopPredicate.test(living)) && getTickDuration(ticks, delta) - 0.2 <= ((float)ticks + delta.getGameTimeDeltaTicks()) && extendedSound.sounds().loop().isPresent()) {
             hasPlayedLoop = true;
             shouldPlayStopSound = false;
-            Minecraft.getInstance().getSoundManager().queueTickingSound(new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false, true));
+            var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false);
+            Minecraft.getInstance().getSoundManager().play(instance);
+            stopAndClear();
             return;
+        }
+
+        if (shouldFade && extendedSound.fadeSpeed().isPresent()) {
+            volume = Math.clamp(volume - (extendedSound.fadeSpeed().get().sample(random) * pitch * initialVolume), 0.0F, 1.0F);
+            if (volume < 0.005F)
+                stopAndClear();
         }
 
         if (living != null) {
@@ -88,25 +106,60 @@ public class MibSoundInstance extends AbstractTickableSoundInstance implements U
             this.y = living.getY();
             this.z = living.getZ();
         }
-
-        if (shouldFade && extendedSound.fadeSpeed().isPresent())
-            volume = Math.clamp(volume - (extendedSound.fadeSpeed().get().sample(random) * pitch * initialVolume), 0.0F, 1.0F);
     }
 
-    protected int getOrCalculateStartSoundStop() {
-        if (startLoopTicks != Integer.MIN_VALUE)
-            return startLoopTicks;
+    protected SoundBuffer getBuffer() {
+        return buffer;
+    }
 
-        SoundEngineAccessor soundEngine = ((SoundEngineAccessor) ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine());
-        if (!soundEngine.mib$getInstanceToChannel().containsKey(this))
-            return 0;
-        SoundBuffer buffer = MibClientUtil.getSoundBuffer();
+    public void setBuffer(SoundBuffer buffer) {
+        this.buffer = buffer;
+    }
+
+    protected void stopAndClear() {
+        ((AbstractTickableSoundInstanceAccessor)this).mib$setStopped(true);
+        looping = false;
+        SoundEngine engine = ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine();
+        engine.stop(this);
+    }
+
+    public float getTickDuration(long ticks, DeltaTracker delta) {
+        if (tickDuration != Float.MAX_VALUE)
+            return tickDuration;
+        SoundBuffer buffer = getBuffer();
         if (buffer == null)
-            return Integer.MAX_VALUE;
+             return Float.MAX_VALUE;
         AudioFormat format = ((SoundBufferAccessor)buffer).mib$getFormat();
-        float nonTickValue = ((float)((SoundBufferAccess)buffer).mib$getData().capacity() / format.getFrameSize()) / format.getFrameRate();
-        startLoopTicks = soundEngine.mib$getTickCount() + (int) (nonTickValue * 20 / pitch) - 2;
-        MibClientUtil.clearSoundBuffer();
-        return startLoopTicks;
+        float audioLength = ((((SoundBufferAccess)buffer).mib$getByteAmount() / pitch) / format.getFrameSize() / format.getFrameRate());
+        tickDuration = (float)ticks + delta.getGameTimeDeltaTicks() + (audioLength * 20);
+        return tickDuration;
+    }
+
+    public boolean hasPlayedLoop() {
+        return hasPlayedLoop;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if ((!(obj instanceof MibSoundInstance inst)))
+            return false;
+        return inst.sound.equals(sound) && inst.extendedSound.equals(extendedSound) && compareFloats(inst.pitch, pitch);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sound, extendedSound, pitch);
+    }
+
+    private boolean compareFloats(float a, float b) {
+        float diff = Math.abs(a - b);
+        return diff < 0.0001F;
+    }
+
+    @Override
+    public void tick() {
+        // No-op
     }
 }

@@ -10,12 +10,6 @@ import java.util.Map;
 
 @Mixin(SoundEngine.class)
 public interface SoundEngineAccessor {
-    @Accessor("soundDeleteTime")
-    Map<SoundInstance, Integer> mib$getSoundDeleteTime();
-
-    @Accessor("tickCount")
-    int mib$getTickCount();
-
     @Accessor("instanceToChannel")
     Map<SoundInstance, ChannelAccess.ChannelHandle> mib$getInstanceToChannel();
 }
