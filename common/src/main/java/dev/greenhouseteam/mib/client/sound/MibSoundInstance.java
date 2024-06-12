@@ -161,7 +161,9 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
             return true;
         if ((!(obj instanceof MibSoundInstance inst)))
             return false;
-        return (inst.sound == null && sound == null || inst.sound.equals(sound)) && inst.extendedSound.equals(extendedSound) && compareFloats(inst.pitch, pitch);
+        if (inst.sound == null)
+            return sound == null;
+        return inst.sound.equals(sound) && inst.extendedSound.equals(extendedSound) && compareFloats(inst.pitch, pitch);
     }
 
     @Override
