@@ -14,15 +14,15 @@ import java.nio.ByteBuffer;
 @Mixin(SoundBuffer.class)
 public class SoundBufferMixin implements SoundBufferAccess {
     @Unique
-    private ByteBuffer mib$capturedData;
+    private int mib$bufferSize;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void mib$captureData(ByteBuffer data, AudioFormat format, CallbackInfo ci) {
-        mib$capturedData = data;
+    private void mib$captureBufferSize(ByteBuffer buffer, AudioFormat format, CallbackInfo ci) {
+        mib$bufferSize = buffer.capacity();
     }
 
     @Override
-    public ByteBuffer mib$getData() {
-        return mib$capturedData;
+    public int mib$getByteAmount() {
+        return mib$bufferSize;
     }
 }

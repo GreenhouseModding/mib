@@ -1,6 +1,5 @@
 package dev.greenhouseteam.mib.client.util;
 
-import com.mojang.blaze3d.audio.SoundBuffer;
 import dev.greenhouseteam.mib.client.sound.MibSoundInstance;
 import dev.greenhouseteam.mib.component.ItemInstrument;
 import dev.greenhouseteam.mib.data.ExtendedSound;
@@ -20,15 +19,12 @@ import net.minecraft.world.item.ItemStack;
 
 public class MibClientUtil {
     public static void queueSound(Player player, InteractionHand hand, ExtendedSound extendedSound, float volume, float pitch) {
-        Minecraft.getInstance().getSoundManager().play(new MibSoundInstance(
+        Minecraft.getInstance().getSoundManager().play(MibSoundInstance.createEntityDependent(
                 player,
                 player.getItemInHand(hand),
-                extendedSound.sounds().start().value(),
                 extendedSound,
                 volume,
-                pitch,
-                false,
-                false)
+                pitch)
         );
     }
 
@@ -50,19 +46,5 @@ public class MibClientUtil {
         }
 
         return false;
-    }
-
-    private static SoundBuffer capturedBuffer;
-
-    public static void captureSoundBuffer(SoundBuffer buffer) {
-        capturedBuffer = buffer;
-    }
-
-    public static SoundBuffer getSoundBuffer() {
-        return capturedBuffer;
-    }
-
-    public static void clearSoundBuffer() {
-        capturedBuffer = null;
     }
 }
