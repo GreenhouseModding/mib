@@ -107,10 +107,10 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         if (!hasPlayedLoop && (extendedSound.fadeSpeed().isPresent() || living == null || !stopPredicate.test(living)) && getTickDuration(ticks, delta) - 0.2 <= ((float)ticks + delta.getGameTimeDeltaTicks()) && extendedSound.sounds().loop().isPresent()) {
             hasPlayedLoop = true;
             shouldPlayStopSound = false;
+            stopAndClear();
             var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false);
             Minecraft.getInstance().getSoundManager().play(instance);
             loopSound = instance;
-            stopAndClear();
             return;
         }
 
