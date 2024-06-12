@@ -35,7 +35,7 @@ public class SoundEngineMixin {
 
     @Inject(method = "method_19752", at = @At("HEAD"))
     private static void captureSoundBuffer(SoundBuffer buffer, Channel channel, CallbackInfo ci) {
-        if (mib$soundInstance != null && !mib$soundInstance.hasPlayedLoop())
+        if (mib$soundInstance != null && mib$soundInstance.shouldPlayLoop())
             mib$soundInstance.setBuffer(buffer);
         mib$soundInstance = null;
     }

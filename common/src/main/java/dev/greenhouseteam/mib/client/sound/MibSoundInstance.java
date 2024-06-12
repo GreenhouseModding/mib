@@ -28,7 +28,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
     protected final LivingEntity living;
     protected final Predicate<LivingEntity> stopPredicate;
     protected final ExtendedSound extendedSound;
-    protected boolean hasPlayedLoop;
+    protected boolean shouldPlayLoop;
     protected boolean shouldFade = false;
     protected boolean shouldPlayStopSound = true;
     protected float initialVolume;
@@ -41,7 +41,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
     protected MibSoundInstance(@Nullable LivingEntity living, double x, double y, double z, Predicate<LivingEntity> stopPredicate,
                             SoundEvent sound, ExtendedSound extendedSound,
                             float volume, float pitch, boolean isLooping,
-                            boolean shouldPlayLoopSound) {
+                            boolean shouldPlayLoop) {
         super(sound, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
         this.living = living;
         this.x = x;
@@ -53,7 +53,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         this.initialVolume = volume;
         this.pitch = pitch;
         this.looping = isLooping;
-        this.hasPlayedLoop = !shouldPlayLoopSound;
+        this.shouldPlayLoop = shouldPlayLoop;
     }
 
     public static MibSoundInstance createBlockPosDependent(BlockPos blockPos, ExtendedSound extendedSound, float volume, float pitch) {
@@ -91,7 +91,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
     }
 
     public void bypassingTick(long ticks, DeltaTracker delta) {
-        if (hasPlayedLoop && living != null && stopPredicate.test(living) && !shouldFade) {
+        if (!shouldPlayLoop && living != null && stopPredicate.test(living) && !shouldFade) {
             if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent()) {
                 var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false);
                 Minecraft.getInstance().getSoundManager().play(instance);
@@ -104,8 +104,8 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
             return;
         }
 
-        if (!hasPlayedLoop && (extendedSound.fadeSpeed().isPresent() || living == null || !stopPredicate.test(living)) && getTickDuration(ticks, delta) - 0.2 <= ((float)ticks + delta.getGameTimeDeltaTicks()) && extendedSound.sounds().loop().isPresent()) {
-            hasPlayedLoop = true;
+        if (shouldPlayLoop && (extendedSound.fadeSpeed().isPresent() || living == null || !stopPredicate.test(living)) && getTickDuration(ticks, delta) - 0.2 <= ((float)ticks + delta.getGameTimeDeltaTicks()) && extendedSound.sounds().loop().isPresent()) {
+            shouldPlayLoop = false;
             shouldPlayStopSound = false;
             stopAndClear();
             var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false);
@@ -138,6 +138,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
     public void stopAndClear() {
         ((AbstractTickableSoundInstanceAccessor)this).mib$setStopped(true);
         looping = false;
+        shouldPlayLoop = false;
         SoundEngine engine = ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine();
         engine.stop(this);
         if (loopSound != null)
@@ -156,8 +157,8 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         return tickDuration;
     }
 
-    public boolean hasPlayedLoop() {
-        return hasPlayedLoop;
+    public boolean shouldPlayLoop() {
+        return shouldPlayLoop;
     }
 
     @Override
