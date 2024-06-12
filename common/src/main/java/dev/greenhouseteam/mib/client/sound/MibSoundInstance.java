@@ -33,6 +33,8 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
     protected boolean shouldPlayStopSound = true;
     protected float initialVolume;
     protected float tickDuration = Float.MAX_VALUE;
+    @Nullable
+    protected MibSoundInstance loopSound = null;
 
     private SoundBuffer buffer;
 
@@ -54,13 +56,13 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         this.hasPlayedLoop = !shouldPlayLoopSound;
     }
 
-    public static MibSoundInstance createBlockPosDependent(Vec3 pos, ExtendedSound extendedSound, float volume, float pitch) {
+    public static MibSoundInstance createBlockPosDependent(BlockPos blockPos, ExtendedSound extendedSound, float volume, float pitch) {
+        Vec3 pos = blockPos.getCenter();
         return new MibSoundInstance(null, pos.x, pos.y, pos.z,
                 p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true);
     }
 
-    public static MibSoundInstance createPosDependent(BlockPos blockPos, ExtendedSound extendedSound, float volume, float pitch) {
-        Vec3 pos = blockPos.getCenter();
+    public static MibSoundInstance createPosDependent(Vec3 pos, ExtendedSound extendedSound, float volume, float pitch) {
         return new MibSoundInstance(null, pos.x, pos.y, pos.z,
                 p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true);
     }
@@ -107,6 +109,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
             shouldPlayStopSound = false;
             var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false);
             Minecraft.getInstance().getSoundManager().play(instance);
+            loopSound = instance;
             stopAndClear();
             return;
         }
@@ -132,11 +135,13 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         this.buffer = buffer;
     }
 
-    protected void stopAndClear() {
+    public void stopAndClear() {
         ((AbstractTickableSoundInstanceAccessor)this).mib$setStopped(true);
         looping = false;
         SoundEngine engine = ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine();
         engine.stop(this);
+        if (loopSound != null)
+            loopSound.stopAndClear();
     }
 
     public float getTickDuration(long ticks, DeltaTracker delta) {
