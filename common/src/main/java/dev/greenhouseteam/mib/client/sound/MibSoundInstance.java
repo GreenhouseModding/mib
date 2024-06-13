@@ -123,7 +123,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         this.buffer = buffer;
     }
 
-    protected void stopOrFadeOut() {
+    public void stopOrFadeOut() {
         if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent()) {
             var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false);
             Minecraft.getInstance().getSoundManager().play(instance);
