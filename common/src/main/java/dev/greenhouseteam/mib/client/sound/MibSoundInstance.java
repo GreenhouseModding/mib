@@ -1,16 +1,13 @@
 package dev.greenhouseteam.mib.client.sound;
 
-import com.mojang.blaze3d.audio.Channel;
 import com.mojang.blaze3d.audio.SoundBuffer;
 import dev.greenhouseteam.mib.access.SoundBufferAccess;
-import dev.greenhouseteam.mib.client.util.MibClientUtil;
 import dev.greenhouseteam.mib.data.ExtendedSound;
 import dev.greenhouseteam.mib.mixin.client.*;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -20,7 +17,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import javax.sound.sampled.AudioFormat;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class MibSoundInstance extends AbstractTickableSoundInstance {
@@ -92,15 +88,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
 
     public void bypassingTick(long ticks, DeltaTracker delta) {
         if (!shouldPlayLoop && living != null && stopPredicate.test(living) && !shouldFade) {
-            if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent()) {
-                var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false);
-                Minecraft.getInstance().getSoundManager().play(instance);
-            }
-
-            if (extendedSound.fadeSpeed().isPresent())
-                shouldFade = true;
-            else
-                stopAndClear();
+            stopOrFadeOut();
             return;
         }
 
@@ -135,12 +123,23 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         this.buffer = buffer;
     }
 
-    public void stopAndClear() {
+    protected void stopOrFadeOut() {
+        if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent()) {
+            var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false);
+            Minecraft.getInstance().getSoundManager().play(instance);
+        }
+
+        if (extendedSound.fadeSpeed().isPresent())
+            shouldFade = true;
+        else
+            stopAndClear();
+    }
+
+    protected void stopAndClear() {
         ((AbstractTickableSoundInstanceAccessor)this).mib$setStopped(true);
         looping = false;
         shouldPlayLoop = false;
-        SoundEngine engine = ((SoundManagerAccessor)Minecraft.getInstance().getSoundManager()).mib$getSoundEngine();
-        engine.stop(this);
+        Minecraft.getInstance().getSoundManager().stop(this);
         if (loopSound != null)
             loopSound.stopAndClear();
     }
