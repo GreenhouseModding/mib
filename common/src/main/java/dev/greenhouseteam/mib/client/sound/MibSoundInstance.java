@@ -138,7 +138,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
             stopAndClear();
     }
 
-    protected void stopAndClear() {
+    public void stopAndClear() {
         ((AbstractTickableSoundInstanceAccessor)this).mib$setStopped(true);
         looping = false;
         shouldPlayLoop = false;
