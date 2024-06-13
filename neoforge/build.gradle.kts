@@ -30,16 +30,6 @@ runs {
     }
 }
 
-repositories {
-    maven("https://prmaven.neoforged.net/NeoForge/pr1076") {
-        name = "Maven for PR #1076" // https://github.com/neoforged/NeoForge/pull/1076
-        content {
-            includeModule("net.neoforged", "testframework")
-            includeModule("net.neoforged", "neoforge")
-        }
-    }
-}
-
 dependencies {
     implementation("net.neoforged:neoforge:${Versions.NEOFORGE}")
 }
