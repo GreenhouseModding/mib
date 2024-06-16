@@ -51,7 +51,7 @@ public record KeyWithOctave(Key key, int octave) {
             if (i % 12 == 11)
                 ++currentOctave;
         }
-        throw new RuntimeException("Int must be within a range of 0- " + Key.values().length * MAX_OCTAVE + ".");
+        throw new RuntimeException("Int must be within a range of 0-" + Key.values().length * MAX_OCTAVE + ".");
     }
 
     @Override
