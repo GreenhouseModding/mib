@@ -10,7 +10,7 @@ public record KeyWithOctave(Key key, int octave) {
 
     public static final int DEFAULT_OCTAVE = 3;
     private static final int MIN_OCTAVE = 1;
-    private static final int MAX_OCTAVE = 5;
+    private static final int MAX_OCTAVE = 4;
 
     public static final KeyWithOctave DEFAULT = new KeyWithOctave(Key.C, DEFAULT_OCTAVE);
 
