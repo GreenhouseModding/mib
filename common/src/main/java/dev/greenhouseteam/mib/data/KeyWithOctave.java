@@ -27,9 +27,8 @@ public record KeyWithOctave(Key key, int octave) {
         try {
             KeyWithOctave keyWithOctave = new KeyWithOctave(Key.getKey(isSharp ? string.substring(0, 2) : string.substring(0, 1)), Mth.clamp(octave.orElseGet(() -> Character.getNumericValue(isSharp ? string.charAt(2) : string.charAt(1))), MIN_OCTAVE, MAX_OCTAVE));
             return DataResult.success(keyWithOctave);
-        } catch (Exception ignored) {
-        }
-        return DataResult.error(() -> "Could not get key from '" + string + "'. Must be one of: " + Key.buildValuesString() + ", optionally with an octave ranging from 1-5 at the end.");
+        } catch (Exception ignored) {}
+        return DataResult.error(() -> "Could not get key from '" + string + "'. Must be one of: " + Key.buildValuesString() + ", optionally with an octave ranging from  " + MIN_OCTAVE + "-" + MAX_OCTAVE + " at the end.");
     }
 
     public int getValue() {
@@ -46,13 +45,13 @@ public record KeyWithOctave(Key key, int octave) {
 
     public static KeyWithOctave fromInt(int value) {
         int currentOctave = 1;
-        for (int i = 0; i < Key.values().length * 5; ++i) {
+        for (int i = 0; i < Key.values().length * MAX_OCTAVE; ++i) {
             if (i == value)
                 return new KeyWithOctave(Key.values()[i % 12], currentOctave);
             if (i % 12 == 11)
                 ++currentOctave;
         }
-        throw new RuntimeException("Int must be within a range of 0-55.");
+        throw new RuntimeException("Int must be within a range of 0- " + Key.values().length * MAX_OCTAVE + ".");
     }
 
     @Override
