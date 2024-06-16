@@ -20,7 +20,7 @@ public class MibFabric implements ModInitializer {
     }
 
     public static void registerContents() {
-        MibComponents.registerAll(Registry::register);
+        MibDataComponents.registerAll(Registry::register);
         MibInstrumentAnimations.registerAll(Registry::register);
         MibItems.registerAll(Registry::register);
         MibSoundEvents.registerAll(Registry::register);

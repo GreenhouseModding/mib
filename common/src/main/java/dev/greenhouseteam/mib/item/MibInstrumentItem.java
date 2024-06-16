@@ -2,7 +2,7 @@ package dev.greenhouseteam.mib.item;
 
 import dev.greenhouseteam.mib.Mib;
 import dev.greenhouseteam.mib.component.ItemInstrument;
-import dev.greenhouseteam.mib.registry.MibComponents;
+import dev.greenhouseteam.mib.registry.MibDataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,27 +32,27 @@ public class MibInstrumentItem extends Item {
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int useTicksRemaining) {
-        if (!stack.has(MibComponents.INSTRUMENT))
+        if (!stack.has(MibDataComponents.INSTRUMENT))
             return;
         Mib.getHelper().invokeTickEvents(level, entity, stack, useTicksRemaining);
         if (useTicksRemaining % 20 == 0) {
             entity.gameEvent(GameEvent.INSTRUMENT_PLAY, entity);
-            if (stack.has(MibComponents.INSTRUMENT) && stack.get(MibComponents.INSTRUMENT).animation().isPresent() && !stack.get(MibComponents.INSTRUMENT).animation().get().handsToSwing().isEmpty())
-                stack.get(MibComponents.INSTRUMENT).animation().get().handsToSwing().forEach(hand -> entity.swing(hand, true));
+            if (stack.has(MibDataComponents.INSTRUMENT) && stack.get(MibDataComponents.INSTRUMENT).animation().isPresent() && !stack.get(MibDataComponents.INSTRUMENT).animation().get().handsToSwing().isEmpty())
+                stack.get(MibDataComponents.INSTRUMENT).animation().get().handsToSwing().forEach(hand -> entity.swing(hand, true));
         }
     }
 
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        if (!stack.has(MibComponents.INSTRUMENT))
+        if (!stack.has(MibDataComponents.INSTRUMENT))
             return 40;
-        return Mib.getHelper().getInstrumentUseDuration(stack, entity, stack.get(MibComponents.INSTRUMENT).maxUseDuration());
+        return Mib.getHelper().getInstrumentUseDuration(stack, entity, stack.get(MibDataComponents.INSTRUMENT).maxUseDuration());
     }
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        if (stack.has(MibComponents.INSTRUMENT) && stack.get(MibComponents.INSTRUMENT).animation().isPresent() && stack.get(MibComponents.INSTRUMENT).animation().get().useAnim() != null)
-            return stack.get(MibComponents.INSTRUMENT).animation().get().useAnim();
+        if (stack.has(MibDataComponents.INSTRUMENT) && stack.get(MibDataComponents.INSTRUMENT).animation().isPresent() && stack.get(MibDataComponents.INSTRUMENT).animation().get().useAnim() != null)
+            return stack.get(MibDataComponents.INSTRUMENT).animation().get().useAnim();
         return super.getUseAnimation(stack);
     }
 

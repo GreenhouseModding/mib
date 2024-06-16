@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 public class MibRegistryEvents {
     @SubscribeEvent
     public static void registerContent(RegisterEvent event) {
-        register(event, MibComponents::registerAll);
+        register(event, MibDataComponents::registerAll);
         register(event, MibInstrumentAnimations::registerAll);
         register(event, MibItems::registerAll);
         register(event, MibSoundEvents::registerAll);

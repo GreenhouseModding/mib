@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.authlib.GameProfile;
 import dev.greenhouseteam.mib.Mib;
 import dev.greenhouseteam.mib.item.MibInstrumentItem;
-import dev.greenhouseteam.mib.registry.MibComponents;
+import dev.greenhouseteam.mib.registry.MibDataComponents;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
@@ -23,7 +23,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
     private boolean mib$preventSlowdownOnInstrumentUsingPlayer(boolean original) {
         if (isUsingItem() && getUseItem().getItem() instanceof MibInstrumentItem &&
-                getUseItem().has(MibComponents.INSTRUMENT))
+                getUseItem().has(MibDataComponents.INSTRUMENT))
             return Mib.getHelper().shouldApplyUseSlowness(getUseItem(), this, false);
         return original;
     }
@@ -31,7 +31,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
     @ModifyExpressionValue(method = "canStartSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
     private boolean mib$allowSprintStartOnInstrumentUsingPlayer(boolean original) {
         if (isUsingItem() && getUseItem().getItem() instanceof MibInstrumentItem &&
-                getUseItem().has(MibComponents.INSTRUMENT))
+                getUseItem().has(MibDataComponents.INSTRUMENT))
             return Mib.getHelper().shouldApplyUseSlowness(getUseItem(), this, false);
         return original;
     }

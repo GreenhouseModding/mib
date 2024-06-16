@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.greenhouseteam.mib.data.KeyWithOctave;
 import dev.greenhouseteam.mib.data.MibSoundSet;
 import dev.greenhouseteam.mib.data.animation.InstrumentAnimation;
-import dev.greenhouseteam.mib.registry.MibComponents;
+import dev.greenhouseteam.mib.registry.MibDataComponents;
 import dev.greenhouseteam.mib.registry.MibRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -64,10 +64,10 @@ public record ItemInstrument(EitherHolder<MibSoundSet> sound, KeyWithOctave defa
     }
 
     public static InteractionResultHolder<ItemStack> playInstrument(Player player, ItemStack stack, InteractionHand hand) {
-        if (!stack.has(MibComponents.INSTRUMENT))
+        if (!stack.has(MibDataComponents.INSTRUMENT))
             return InteractionResultHolder.pass(stack);
 
-        ItemInstrument instrumentComponent = stack.get(MibComponents.INSTRUMENT);
+        ItemInstrument instrumentComponent = stack.get(MibDataComponents.INSTRUMENT);
         var instrument = instrumentComponent.sound().unwrap(player.level().registryAccess());
         if (instrument.isEmpty())
             return InteractionResultHolder.pass(stack);

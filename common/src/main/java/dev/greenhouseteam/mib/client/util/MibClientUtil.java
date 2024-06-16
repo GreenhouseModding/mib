@@ -5,7 +5,7 @@ import dev.greenhouseteam.mib.component.ItemInstrument;
 import dev.greenhouseteam.mib.data.ExtendedSound;
 import dev.greenhouseteam.mib.data.animation.FluteInstrumentAnimation;
 import dev.greenhouseteam.mib.item.MibInstrumentItem;
-import dev.greenhouseteam.mib.registry.MibComponents;
+import dev.greenhouseteam.mib.registry.MibDataComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -29,12 +29,12 @@ public class MibClientUtil {
     }
 
     public static float createPropertyFunction(ItemStack stack, ClientLevel level, LivingEntity entity, int i) {
-        return stack.getItem() instanceof MibInstrumentItem && stack.has(MibComponents.INSTRUMENT) && entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
+        return stack.getItem() instanceof MibInstrumentItem && stack.has(MibDataComponents.INSTRUMENT) && entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
     }
 
     public static boolean poseArms(AbstractClientPlayer player, ItemStack stack, boolean left, ModelPart mainArm, ModelPart offArm, HumanoidModel<AbstractClientPlayer> model) {
-        if (stack.has(MibComponents.INSTRUMENT) && player.isUsingItem() && player.getUseItem() == stack) {
-            ItemInstrument component = stack.get(MibComponents.INSTRUMENT);
+        if (stack.has(MibDataComponents.INSTRUMENT) && player.isUsingItem() && player.getUseItem() == stack) {
+            ItemInstrument component = stack.get(MibDataComponents.INSTRUMENT);
             if (component.animation().isPresent() && component.animation().get() instanceof FluteInstrumentAnimation) {
                 // TODO: Test this.
                 mainArm.xRot = Mth.clamp(model.head.xRot, -1.2F, 1.2F) - 1.65F;

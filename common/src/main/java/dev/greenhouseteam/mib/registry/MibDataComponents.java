@@ -6,7 +6,7 @@ import dev.greenhouseteam.mib.registry.internal.RegistrationCallback;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-public class MibComponents {
+public class MibDataComponents {
     public static final DataComponentType<ItemInstrument> INSTRUMENT = DataComponentType.<ItemInstrument>builder()
             .persistent(ItemInstrument.CODEC)
             .networkSynchronized(ItemInstrument.STREAM_CODEC)
