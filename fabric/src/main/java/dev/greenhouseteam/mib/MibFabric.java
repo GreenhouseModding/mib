@@ -40,6 +40,7 @@ public class MibFabric implements ModInitializer {
             entries.addAfter(MibItems.FLUTE, MibItems.HARPSICHORD);
             entries.addAfter(MibItems.HARPSICHORD, MibItems.KEYBOARD);
             entries.addAfter(MibItems.KEYBOARD, MibItems.SAXOPHONE);
+            entries.addAfter(MibItems.SAXOPHONE, MibItems.VIOLIN);
         });
     }
 

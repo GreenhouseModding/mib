@@ -37,6 +37,7 @@ public class MibNeoForge {
             addAfter(event, MibItems.FLUTE, MibItems.HARPSICHORD);
             addAfter(event, MibItems.HARPSICHORD, MibItems.KEYBOARD);
             addAfter(event, MibItems.KEYBOARD, MibItems.SAXOPHONE);
+            addAfter(event, MibItems.SAXOPHONE, MibItems.VIOLIN);
         }
 
         private static void addAfterAnyItem(BuildCreativeModeTabContentsEvent event, Item startItem, Item newItem) {

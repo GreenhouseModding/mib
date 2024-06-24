@@ -1,7 +1,7 @@
 package dev.greenhouseteam.mib.gradle
 
 object Versions {
-    const val MOD = "0.1.0"
+    const val MOD = "0.1.1"
 
     const val MINECRAFT = "1.21"
     const val INTERNAL_MINECRAFT = "1.21"
