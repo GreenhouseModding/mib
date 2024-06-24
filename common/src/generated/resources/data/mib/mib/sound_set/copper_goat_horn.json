@@ -1,0 +1,12 @@
+{
+  "sounds": {
+    "c3": [
+      {
+        "sounds": {
+          "loop": "mib:mib.instrument.copper_goat_horn_loop",
+          "start": "mib:mib.instrument.copper_goat_horn_start"
+        }
+      }
+    ]
+  }
+}

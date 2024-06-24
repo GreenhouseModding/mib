@@ -1,32 +1,80 @@
 {
-  "mib.instrument.fantasy_trumpet_loop": {
-    "sounds": [
-      "mib:instrument/fantasy_trumpet/fantasy_trumpet_loop"
-    ],
-    "subtitle": "subtitles.mib.instrument.fantasy_trumpet"
-  },
-  "mib.instrument.fantasy_trumpet_start": {
-    "sounds": [
-      "mib:instrument/fantasy_trumpet/fantasy_trumpet_start"
-    ],
-    "subtitle": "subtitles.mib.instrument.fantasy_trumpet"
-  },
-  "mib.instrument.flute_loop": {
-    "sounds": [
-      "mib:instrument/flute/flute_loop"
-    ],
-    "subtitle": "subtitles.mib.instrument.flute"
-  },
-  "mib.instrument.flute_start": {
-    "sounds": [
-      "mib:instrument/flute/flute_start"
-    ],
-    "subtitle": "subtitles.mib.instrument.flute"
-  },
-  "mib.instrument.keyboard": {
-    "sounds": [
-      "mib:instrument/keyboard"
-    ],
-    "subtitle": "subtitles.mib.instrument.keyboard"
-  }
+    "mib.instrument.acoustic_guitar": {
+        "sounds": [
+            "mib:instrument/acoustic_guitar"
+        ],
+        "subtitle": "subtitles.mib.instrument.acoustic_guitar"
+    },
+    "mib.instrument.copper_goat_horn_loop": {
+        "sounds": [
+            "mib:instrument/copper_goat_horn/copper_goat_horn_loop"
+        ],
+        "subtitle": "subtitles.mib.instrument.copper_goat_horn"
+    },
+    "mib.instrument.copper_goat_horn_start": {
+        "sounds": [
+            "mib:instrument/copper_goat_horn/copper_goat_horn_start"
+        ],
+        "subtitle": "subtitles.mib.instrument.copper_goat_horn"
+    },
+    "mib.instrument.fantasy_trumpet_loop": {
+        "sounds": [
+            "mib:instrument/fantasy_trumpet/fantasy_trumpet_loop"
+        ],
+        "subtitle": "subtitles.mib.instrument.fantasy_trumpet"
+    },
+    "mib.instrument.fantasy_trumpet_start": {
+        "sounds": [
+            "mib:instrument/fantasy_trumpet/fantasy_trumpet_start"
+        ],
+        "subtitle": "subtitles.mib.instrument.fantasy_trumpet"
+    },
+    "mib.instrument.flute_loop": {
+        "sounds": [
+            "mib:instrument/flute/flute_loop"
+        ],
+        "subtitle": "subtitles.mib.instrument.flute"
+    },
+    "mib.instrument.flute_start": {
+        "sounds": [
+            "mib:instrument/flute/flute_start"
+        ],
+        "subtitle": "subtitles.mib.instrument.flute"
+    },
+    "mib.instrument.harpsichord": {
+        "sounds": [
+            "mib:instrument/harpsichord"
+        ],
+        "subtitle": "subtitles.mib.instrument.harpsichord"
+    },
+    "mib.instrument.keyboard": {
+        "sounds": [
+            "mib:instrument/keyboard"
+        ],
+        "subtitle": "subtitles.mib.instrument.keyboard"
+    },
+    "mib.instrument.saxophone_loop": {
+        "sounds": [
+            "mib:instrument/saxophone/saxophone_loop"
+        ],
+        "subtitle": "subtitles.mib.instrument.saxophone"
+    },
+    "mib.instrument.saxophone_start": {
+        "sounds": [
+            "mib:instrument/saxophone/saxophone_start"
+        ],
+        "subtitle": "subtitles.mib.instrument.saxophone"
+    },
+    "mib.instrument.violin_loop": {
+        "sounds": [
+            "mib:instrument/violin/violin_loop"
+        ],
+        "subtitle": "subtitles.mib.instrument.violin"
+    },
+    "mib.instrument.violin_start": {
+        "sounds": [
+            "mib:instrument/violin/violin_start"
+        ],
+        "subtitle": "subtitles.mib.instrument.violin"
+    }
 }

@@ -1,8 +1,19 @@
 {
+  "item.mib.acoustic_guitar": "Acoustic Guitar",
+  "item.mib.copper_goat_horn": "Copper Goat Horn",
   "item.mib.fantasy_trumpet": "Fantasy Trumpet",
   "item.mib.flute": "Flute",
+  "item.mib.harpsichord": "Harpsichord",
   "item.mib.keyboard": "Keyboard",
+  "item.mib.saxophone": "Saxophone",
+  "item.mib.violin": "Violin",
+
+  "subtitles.mib.instrument.acoustic_guitar": "Acoustic Guitar plays",
+  "subtitles.mib.instrument.copper_goat_horn": "Copper Goat Horn plays",
   "subtitles.mib.instrument.fantasy_trumpet": "Fantasy Trumpet plays",
   "subtitles.mib.instrument.flute": "Flute plays",
-  "subtitles.mib.instrument.keyboard": "Keyboard plays"
+  "subtitles.mib.instrument.harpsichord": "Harpsichord plays",
+  "subtitles.mib.instrument.keyboard": "Keyboard plays",
+  "subtitles.mib.instrument.saxophone": "Saxophone plays",
+  "subtitles.mib.instrument.violin": "Violin plays"
 }

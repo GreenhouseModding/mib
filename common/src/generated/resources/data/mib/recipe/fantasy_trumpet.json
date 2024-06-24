@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "  G",
+    "GWG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mib:fantasy_trumpet"
+  },
+  "show_notification": false
+}

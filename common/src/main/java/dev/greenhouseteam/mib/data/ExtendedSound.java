@@ -2,6 +2,7 @@ package dev.greenhouseteam.mib.data;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.greenhouseteam.mib.util.FloatRange;
 import net.minecraft.core.Holder;
@@ -17,20 +18,30 @@ import java.util.function.Function;
 public record ExtendedSound(Sounds sounds,
                             Optional<FloatProvider> pitch,
                             Optional<FloatRange> volumeRange,
+                            Optional<Float> fadeStart,
                             Optional<FloatProvider> fadeSpeed) {
 
     public ExtendedSound(Sounds sounds) {
-        this(sounds, Optional.empty(), Optional.empty(), Optional.empty());
+        this(sounds, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     }
 
     public ExtendedSound(Sounds sounds, FloatProvider fadeSpeed) {
-        this(sounds, Optional.empty(), Optional.empty(), Optional.of(fadeSpeed));
+        this(sounds, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(fadeSpeed));
+    }
+
+    public ExtendedSound(Sounds sounds, float fadeStart, FloatProvider fadeSpeed) {
+        this(sounds, Optional.empty(), Optional.empty(), Optional.of(fadeStart), Optional.of(fadeSpeed));
     }
 
     public static final Codec<ExtendedSound> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             Sounds.CODEC.fieldOf("sounds").forGetter(ExtendedSound::sounds),
             FloatProvider.codec(0.0F, 1.0F).optionalFieldOf("pitch").forGetter(ExtendedSound::pitch),
             FloatRange.codec(0.0F, 1.0F).optionalFieldOf("volume_range").forGetter(ExtendedSound::volumeRange),
+            Codec.FLOAT.optionalFieldOf("fade_start").validate(f -> {
+                if (f.isPresent() && f.get() < 0.0F)
+                    return DataResult.error(() -> "fade_start field must not be below 0.");
+                return DataResult.success(f);
+            }).forGetter(ExtendedSound::fadeStart),
             FloatProvider.codec(0.0F, 1.0F).optionalFieldOf("fade_speed").forGetter(ExtendedSound::fadeSpeed)
     ).apply(inst, ExtendedSound::new));
 
@@ -41,6 +52,8 @@ public record ExtendedSound(Sounds sounds,
             ExtendedSound::pitch,
             ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatRange.codec(0.0F, 1.0F))),
             ExtendedSound::volumeRange,
+            ByteBufCodecs.optional(ByteBufCodecs.FLOAT),
+            ExtendedSound::fadeStart,
             ByteBufCodecs.optional(ByteBufCodecs.fromCodec(FloatProvider.CODEC)),
             ExtendedSound::fadeSpeed,
             ExtendedSound::new

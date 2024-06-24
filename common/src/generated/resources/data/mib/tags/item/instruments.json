@@ -1,7 +1,12 @@
 {
   "values": [
+    "mib:acoustic_guitar",
+    "mib:copper_goat_horn",
     "mib:fantasy_trumpet",
     "mib:flute",
-    "mib:keyboard"
+    "mib:harpsichord",
+    "mib:keyboard",
+    "mib:saxophone",
+    "mib:violin"
   ]
 }

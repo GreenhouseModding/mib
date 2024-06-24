@@ -31,13 +31,15 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
     protected float tickDuration = Float.MAX_VALUE;
     @Nullable
     protected MibSoundInstance loopSound = null;
+    protected float elapsedTicks;
 
     private SoundBuffer buffer;
 
     protected MibSoundInstance(@Nullable LivingEntity living, double x, double y, double z, Predicate<LivingEntity> stopPredicate,
-                            SoundEvent sound, ExtendedSound extendedSound,
-                            float volume, float pitch, boolean isLooping,
-                            boolean shouldPlayLoop, boolean shouldFade) {
+                               SoundEvent sound, ExtendedSound extendedSound,
+                               float volume, float pitch, boolean isLooping,
+                               boolean shouldPlayLoop, boolean shouldFade,
+                               float elapsedTicks) {
         super(sound, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
         this.living = living;
         this.x = x;
@@ -51,24 +53,25 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
         this.looping = isLooping;
         this.shouldPlayLoop = shouldPlayLoop;
         this.shouldFade = shouldFade;
+        this.elapsedTicks = elapsedTicks;
     }
 
     public static MibSoundInstance createBlockPosDependent(BlockPos blockPos, ExtendedSound extendedSound, float volume, float pitch) {
         Vec3 pos = blockPos.getCenter();
         return new MibSoundInstance(null, pos.x, pos.y, pos.z,
-                p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true, false);
+                p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true, false, 0);
     }
 
     public static MibSoundInstance createPosDependent(Vec3 pos, ExtendedSound extendedSound, float volume, float pitch) {
         return new MibSoundInstance(null, pos.x, pos.y, pos.z,
-                p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true, false);
+                p -> false, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true, false, 0);
     }
 
     public static MibSoundInstance createEntityDependent(LivingEntity living, ItemStack stack,
                                                   ExtendedSound extendedSound,
                                                   float volume, float pitch) {
         return new MibSoundInstance(living, living.getX(), living.getY(), living.getZ(),
-                p -> !p.isUsingItem() || p.getUseItem() != stack, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true, false);
+                p -> !p.isUsingItem() || p.getUseItem() != stack, extendedSound.sounds().start().value(), extendedSound, volume, pitch, false, true, false, 0);
     }
 
     public static MibSoundInstance createPosDependentStopSound(Vec3 pos,
@@ -76,7 +79,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
                                                                float volume, float pitch) {
         if (extendedSound.sounds().stop().isEmpty())
             throw new RuntimeException("Could not create stop sound from an ExtendedSound without one.");
-        return new MibSoundInstance(null, pos.x(), pos.y(), pos.z(), entity -> false, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false);
+        return new MibSoundInstance(null, pos.x(), pos.y(), pos.z(), entity -> false, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false, 0);
     }
 
     public static MibSoundInstance createEntityDependentStopSound(LivingEntity living, Predicate<LivingEntity> stopPredicate,
@@ -84,7 +87,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
                                                                   float volume, float pitch) {
         if (extendedSound.sounds().stop().isEmpty())
             throw new RuntimeException("Could not create stop sound from an ExtendedSound without one.");
-        return new MibSoundInstance(living, living.getX(), living.getY(), living.getZ(), stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false);
+        return new MibSoundInstance(living, living.getX(), living.getY(), living.getZ(), stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false, 0);
     }
 
     public void bypassingTick(long ticks, DeltaTracker delta) {
@@ -97,7 +100,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
             shouldPlayLoop = false;
             shouldPlayStopSound = false;
             stopAndClear();
-            var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false, shouldFade);
+            var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().loop().get().value(), extendedSound, volume, pitch, true, false, shouldFade, elapsedTicks);
             Minecraft.getInstance().getSoundManager().play(instance);
             loopSound = instance;
             return;
@@ -105,7 +108,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
 
         if (shouldFade && extendedSound.fadeSpeed().isPresent()) {
             volume = Math.clamp(volume - (extendedSound.fadeSpeed().get().sample(random) * pitch * initialVolume), 0.0F, 1.0F);
-            if (volume < 0.005F)
+            if (volume < 0.0F)
                 stopAndClear();
         }
 
@@ -114,6 +117,11 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
             this.y = living.getY();
             this.z = living.getZ();
         }
+
+        if (!shouldFade && extendedSound.fadeStart().isPresent() && elapsedTicks > extendedSound.fadeStart().get())
+            shouldFade = true;
+
+        elapsedTicks += delta.getGameTimeDeltaTicks();
     }
 
     protected SoundBuffer getBuffer() {
@@ -126,7 +134,7 @@ public class MibSoundInstance extends AbstractTickableSoundInstance {
 
     public void stopOrFadeOut() {
         if (shouldPlayStopSound && extendedSound.sounds().stop().isPresent()) {
-            var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false);
+            var instance = new MibSoundInstance(living, x, y, z, stopPredicate, extendedSound.sounds().stop().get().value(), extendedSound, volume, pitch, false, false, false, 0);
             Minecraft.getInstance().getSoundManager().play(instance);
         }
 

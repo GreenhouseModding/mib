@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "W": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "WW ",
+    "BWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mib:harpsichord"
+  },
+  "show_notification": false
+}

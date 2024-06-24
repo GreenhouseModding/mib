@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mib:item/acoustic_guitar"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 85, 0, -25 ],
+      "translation": [ -2.5, 0.5, 0 ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [ 85, 180, 25 ],
+      "translation": [ -2.5, 0.5, 0 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, -70, 0 ],
+      "translation": [ 2.5, 0, 0 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ -180, 80, 180 ],
+      "translation": [ 3, 0, 0 ]
+    },
+    "ground": {
+      "translation": [ 0, 5.5, 0 ]
+    }
+  }
+}

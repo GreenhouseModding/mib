@@ -30,9 +30,13 @@ public class MibNeoForge {
 
         @SubscribeEvent
         public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
-            addAfterAnyItem(event, Items.GOAT_HORN, MibItems.FANTASY_TRUMPET);
+            addAfterAnyItem(event, Items.GOAT_HORN, MibItems.ACOUSTIC_GUITAR);
+            addAfter(event, MibItems.ACOUSTIC_GUITAR, MibItems.COPPER_GOAT_HORN);
+            addAfter(event, MibItems.COPPER_GOAT_HORN, MibItems.FANTASY_TRUMPET);
             addAfter(event, MibItems.FANTASY_TRUMPET, MibItems.FLUTE);
-            addAfter(event, MibItems.FLUTE, MibItems.KEYBOARD);
+            addAfter(event, MibItems.FLUTE, MibItems.HARPSICHORD);
+            addAfter(event, MibItems.HARPSICHORD, MibItems.KEYBOARD);
+            addAfter(event, MibItems.KEYBOARD, MibItems.SAXOPHONE);
         }
 
         private static void addAfterAnyItem(BuildCreativeModeTabContentsEvent event, Item startItem, Item newItem) {

@@ -1,7 +1,7 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-        "layer0": "mib:item/fantasy_trumpet"
+        "layer0": "mib:item/copper_goat_horn"
     },
     "display": {
         "thirdperson_righthand": {
@@ -30,7 +30,7 @@
             "predicate": {
                 "mib:playing": 1
             },
-            "model": "mib:item/tooting_fantasy_trumpet"
+            "model": "mib:item/tooting_copper_goat_horn"
         }
     ]
 }

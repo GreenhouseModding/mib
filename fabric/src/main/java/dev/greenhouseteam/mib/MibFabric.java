@@ -33,9 +33,13 @@ public class MibFabric implements ModInitializer {
                 if (stack.is(Items.GOAT_HORN))
                     goatHorn = stack;
             }
-            entries.addAfter(goatHorn, MibItems.FANTASY_TRUMPET);
+            entries.addAfter(goatHorn, MibItems.ACOUSTIC_GUITAR);
+            entries.addAfter(MibItems.ACOUSTIC_GUITAR, MibItems.COPPER_GOAT_HORN);
+            entries.addAfter(MibItems.COPPER_GOAT_HORN, MibItems.FANTASY_TRUMPET);
             entries.addAfter(MibItems.FANTASY_TRUMPET, MibItems.FLUTE);
-            entries.addAfter(MibItems.FLUTE, MibItems.KEYBOARD);
+            entries.addAfter(MibItems.FLUTE, MibItems.HARPSICHORD);
+            entries.addAfter(MibItems.HARPSICHORD, MibItems.KEYBOARD);
+            entries.addAfter(MibItems.KEYBOARD, MibItems.SAXOPHONE);
         });
     }
 

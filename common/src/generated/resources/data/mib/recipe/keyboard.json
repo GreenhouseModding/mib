@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "W": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "BBB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mib:keyboard"
+  },
+  "show_notification": false
+}

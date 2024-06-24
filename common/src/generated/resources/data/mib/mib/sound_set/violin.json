@@ -1,0 +1,12 @@
+{
+  "sounds": {
+    "c3": [
+      {
+        "sounds": {
+          "loop": "mib:mib.instrument.violin_loop",
+          "start": "mib:mib.instrument.violin_start"
+        }
+      }
+    ]
+  }
+}

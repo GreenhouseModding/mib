@@ -35,10 +35,10 @@ public class MibInstrumentItem extends Item {
         if (!stack.has(MibDataComponents.INSTRUMENT))
             return;
         Mib.getHelper().invokeTickEvents(level, entity, stack, useTicksRemaining);
-        if (useTicksRemaining % 20 == 0) {
+        if (useTicksRemaining == getUseDuration(stack, entity) || useTicksRemaining % 10 == 0) {
             entity.gameEvent(GameEvent.INSTRUMENT_PLAY, entity);
-            if (stack.has(MibDataComponents.INSTRUMENT) && stack.get(MibDataComponents.INSTRUMENT).animation().isPresent() && !stack.get(MibDataComponents.INSTRUMENT).animation().get().handsToSwing().isEmpty())
-                stack.get(MibDataComponents.INSTRUMENT).animation().get().handsToSwing().forEach(hand -> entity.swing(hand, true));
+            if (stack.get(MibDataComponents.INSTRUMENT).animation().isPresent() && !stack.get(MibDataComponents.INSTRUMENT).animation().get().handsToSwing().isEmpty())
+                stack.get(MibDataComponents.INSTRUMENT).animation().get().handsToSwing().forEach(hand -> entity.swing(hand != InteractionHand.OFF_HAND && hand == entity.getUsedItemHand() || hand == InteractionHand.OFF_HAND && hand != entity.getUsedItemHand() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND, true));
         }
     }
 

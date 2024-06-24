@@ -1,0 +1,11 @@
+{
+  "sounds": {
+    "c3": [
+      {
+        "sounds": {
+          "start": "mib:mib.instrument.acoustic_guitar"
+        }
+      }
+    ]
+  }
+}
