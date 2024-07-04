@@ -1,37 +1,51 @@
 import dev.greenhouseteam.mib.gradle.Properties
 import dev.greenhouseteam.mib.gradle.Versions
-import net.neoforged.gradle.dsl.common.runs.ide.extensions.IdeaRunExtension
 import org.apache.tools.ant.filters.LineContains
 
 plugins {
     id("mib.loader")
-    id("net.neoforged.gradle.userdev") version "7.0.142"
+    id("net.neoforged.moddev")
 }
 
-val at = file("src/main/resources/${Properties.MOD_ID}.cfg")
-if (at.exists())
-    minecraft.accessTransformers.file(at)
+neoForge {
+    version = Versions.NEOFORGE
+    parchment {
+        minecraftVersion = Versions.INTERNAL_MINECRAFT
+        mappingsVersion = Versions.PARCHMENT
+    }
+    addModdingDependenciesTo(sourceSets["test"])
 
-runs {
-    configureEach {
-        systemProperty("forge.logging.markers", "REGISTRIES")
-        systemProperty("forge.logging.console.level", "debug")
-        systemProperty("neoforge.enabledGameTestNamespaces", Properties.MOD_ID)
-        jvmArguments("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true")
-        extensions.configure<IdeaRunExtension>("idea") {
-            primarySourceSet = sourceSets["test"]
+    val at = project(":common").file("src/main/resources/${Properties.MOD_ID}.cfg")
+    if (at.exists())
+        accessTransformers.add(at.absolutePath)
+
+    runs {
+        configureEach {
+            systemProperty("forge.logging.markers", "REGISTRIES")
+            systemProperty("forge.logging.console.level", "debug")
+            systemProperty("neoforge.enabledGameTestNamespaces", Properties.MOD_ID)
         }
-        modSource(sourceSets["main"])
-        modSource(sourceSets["test"])
+        create("client") {
+            client()
+            gameDirectory.set(file("runs/client"))
+            sourceSet = sourceSets["test"]
+            jvmArguments.set(setOf("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true"))
+        }
+        create("server") {
+            server()
+            gameDirectory.set(file("runs/server"))
+            programArgument("--nogui")
+            sourceSet = sourceSets["test"]
+            jvmArguments.set(setOf("-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true"))
+        }
     }
-    create("client") {}
-    create("server") {
-        programArgument("--nogui")
-    }
-}
 
-dependencies {
-    implementation("net.neoforged:neoforge:${Versions.NEOFORGE}")
+    mods {
+        register(Properties.MOD_ID) {
+            sourceSet(sourceSets["main"])
+            sourceSet(sourceSets["test"])
+        }
+    }
 }
 
 tasks {

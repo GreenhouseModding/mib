@@ -3,8 +3,10 @@ import dev.greenhouseteam.mib.gradle.Versions
 
 plugins {
     id("mib.common")
-    id("org.spongepowered.gradle.vanilla") version "0.2.1-SNAPSHOT"
+    id("net.neoforged.moddev")
 }
+
+base.archivesName.set(Properties.MOD_ID + "-" + project.name)
 
 sourceSets {
     create("generated") {
@@ -14,11 +16,17 @@ sourceSets {
     }
 }
 
-minecraft {
-    version(Versions.INTERNAL_MINECRAFT)
-    val aw = file("src/main/resources/${Properties.MOD_ID}.accesswidener")
-    if (aw.exists())
-        accessWideners(aw)
+neoForge {
+    neoFormVersion = Versions.NEOFORM
+    parchment {
+        minecraftVersion = Versions.INTERNAL_MINECRAFT
+        mappingsVersion = Versions.PARCHMENT
+    }
+    addModdingDependenciesTo(sourceSets["test"])
+
+    val at = file("src/main/resources/${Properties.MOD_ID}.cfg")
+    if (at.exists())
+        accessTransformers.add(at.absolutePath)
 }
 
 dependencies {
@@ -36,15 +44,10 @@ configurations {
         isCanBeResolved = false
         isCanBeConsumed = true
     }
-    register("commonTestResources") {
-        isCanBeResolved = false
-        isCanBeConsumed = true
-    }
 }
 
 artifacts {
     add("commonJava", sourceSets["main"].java.sourceDirectories.singleFile)
     add("commonResources", sourceSets["main"].resources.sourceDirectories.singleFile)
     add("commonResources", sourceSets["generated"].resources.sourceDirectories.singleFile)
-    add("commonTestResources", sourceSets["test"].resources.sourceDirectories.singleFile)
 }

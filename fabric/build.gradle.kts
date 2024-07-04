@@ -3,7 +3,7 @@ import dev.greenhouseteam.mib.gradle.Versions
 
 plugins {
     id("mib.loader")
-    id("fabric-loom") version "1.6-SNAPSHOT"
+    id("fabric-loom")
 }
 
 repositories {

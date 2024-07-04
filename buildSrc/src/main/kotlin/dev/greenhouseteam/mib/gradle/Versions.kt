@@ -5,6 +5,8 @@ object Versions {
 
     const val MINECRAFT = "1.21"
     const val INTERNAL_MINECRAFT = "1.21"
+    const val NEOFORM = "$MINECRAFT-20240613.152323"
+    const val PARCHMENT = "2024.06.23"
 
     const val FABRIC_API = "0.100.1+1.21"
     const val FABRIC_LOADER = "0.15.11"

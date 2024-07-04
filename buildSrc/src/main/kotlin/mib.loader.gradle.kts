@@ -11,9 +11,6 @@ configurations {
     register("commonResources") {
         isCanBeResolved = true
     }
-    register("commonTestResources") {
-        isCanBeResolved = true
-    }
 }
 
 dependencies {
@@ -24,7 +21,6 @@ dependencies {
     }
     "commonJava"(project(":common", "commonJava"))
     "commonResources"(project(":common", "commonResources"))
-    "commonTestResources"(project(":common", "commonTestResources"))
 }
 
 tasks {
@@ -36,11 +32,6 @@ tasks {
         dependsOn(configurations.getByName("commonResources"))
         from(configurations.getByName("commonResources"))
         from(configurations.getByName("commonResources"))
-    }
-    named<ProcessResources>("processTestResources").configure {
-        dependsOn(configurations.getByName("commonTestResources"))
-        from(configurations.getByName("commonTestResources"))
-        from(configurations.getByName("commonTestResources"))
     }
     named<Javadoc>("javadoc").configure {
         dependsOn(configurations.getByName("commonJava"))
