@@ -15,5 +15,7 @@
   "subtitles.mib.instrument.harpsichord": "Harpsichord plays",
   "subtitles.mib.instrument.keyboard": "Keyboard plays",
   "subtitles.mib.instrument.saxophone": "Saxophone plays",
-  "subtitles.mib.instrument.violin": "Violin plays"
+  "subtitles.mib.instrument.violin": "Violin plays",
+
+  "tag.item.mib.instruments": "Instruments"
 }

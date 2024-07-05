@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class MibClientUtil {
     public static void queueSound(Player player, InteractionHand hand, ExtendedSound extendedSound, float volume, float pitch) {
-        Minecraft.getInstance().getSoundManager().play(MibSoundInstance.createEntityDependent(
+        Minecraft.getInstance().getSoundManager().queueTickingSound(MibSoundInstance.createEntityDependent(
                 player,
                 player.getItemInHand(hand),
                 extendedSound,
@@ -36,7 +36,6 @@ public class MibClientUtil {
         if (stack.has(MibDataComponents.INSTRUMENT) && player.isUsingItem() && player.getUseItem() == stack) {
             ItemInstrument component = stack.get(MibDataComponents.INSTRUMENT);
             if (component.animation().isPresent() && component.animation().get() instanceof FluteInstrumentAnimation) {
-                // TODO: Test this.
                 mainArm.xRot = Mth.clamp(model.head.xRot, -1.2F, 1.2F) - 1.65F;
                 mainArm.yRot = (float) (model.head.yRot + (left ? Math.PI / 6.0F : -Math.PI / 6.0F));
                 offArm.xRot = Mth.clamp(model.head.xRot, -1.2F, 1.2F) - 1.75F;

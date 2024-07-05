@@ -2,6 +2,8 @@
   "sounds": {
     "c3": [
       {
+        "fade_speed": 0.0075,
+        "fade_start": 30.0,
         "sounds": {
           "loop": "mib:mib.instrument.copper_goat_horn_loop",
           "start": "mib:mib.instrument.copper_goat_horn_start"

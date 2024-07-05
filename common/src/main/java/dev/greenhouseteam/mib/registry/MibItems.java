@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item;
 
 public class MibItems {
     public static final Item ACOUSTIC_GUITAR = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.ACOUSTIC_GUITAR, 1, SwingOffhandInstrumentAnimation.INSTANCE)));
-    public static final Item COPPER_GOAT_HORN = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.COPPER_GOAT_HORN, TootInstrumentAnimation.INSTANCE)));
+    public static final Item COPPER_GOAT_HORN = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.COPPER_GOAT_HORN, new KeyWithOctave(Key.G, 3), TootInstrumentAnimation.INSTANCE)));
     public static final Item FANTASY_TRUMPET = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.FANTASY_TRUMPET, new KeyWithOctave(Key.G_SHARP, 3), TootInstrumentAnimation.INSTANCE)));
     public static final Item FLUTE = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.FLUTE, new KeyWithOctave(Key.C, 4), FluteInstrumentAnimation.INSTANCE)));
     public static final Item HARPSICHORD = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.HARPSICHORD, 1)));

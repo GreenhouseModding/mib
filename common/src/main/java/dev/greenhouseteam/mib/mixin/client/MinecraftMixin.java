@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftMixin {
     @Shadow @Final private SoundManager soundManager;
 
-    @Shadow private long clientTickCount;
-
     @Shadow public abstract DeltaTracker getTimer();
 
     @Shadow public abstract boolean isPaused();
@@ -27,7 +25,7 @@ public abstract class MinecraftMixin {
             return;
         for (MibSoundInstance soundInstance : ((SoundEngineAccessor)((SoundManagerAccessor)soundManager).mib$getSoundEngine()).mib$getInstanceToChannel().keySet().stream()
                 .filter(inst -> inst instanceof MibSoundInstance).map(instance -> (MibSoundInstance)instance).toList()) {
-            soundInstance.bypassingTick(clientTickCount, getTimer());
+            soundInstance.bypassingTick(getTimer());
         }
     }
 }

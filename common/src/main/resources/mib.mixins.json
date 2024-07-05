@@ -8,7 +8,6 @@
     "LivingEntityMixin"
   ],
   "client": [
-    "client.AbstractTickableSoundInstanceAccessor",
     "client.HumanoidModelMixin",
     "client.ItemInHandRendererMixin",
     "client.LocalPlayerMixin",
