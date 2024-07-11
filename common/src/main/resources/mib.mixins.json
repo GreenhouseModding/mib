@@ -5,7 +5,8 @@
   "refmap": "mib.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "ResourceKeyArgumentAccessor"
   ],
   "client": [
     "client.HumanoidModelMixin",

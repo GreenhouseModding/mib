@@ -6,8 +6,6 @@ plugins {
     id("net.neoforged.moddev")
 }
 
-base.archivesName.set(Properties.MOD_ID + "-" + project.name)
-
 sourceSets {
     create("generated") {
         resources {
@@ -25,8 +23,12 @@ neoForge {
     addModdingDependenciesTo(sourceSets["test"])
 
     val at = file("src/main/resources/${Properties.MOD_ID}.cfg")
-    if (at.exists())
-        accessTransformers.add(at.absolutePath)
+    accessTransformers {
+        from(at)
+        publish(at)
+    }
+
+    validateAccessTransformers = true
 }
 
 dependencies {

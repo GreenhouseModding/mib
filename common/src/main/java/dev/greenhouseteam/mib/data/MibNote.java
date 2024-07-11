@@ -3,7 +3,7 @@ package dev.greenhouseteam.mib.data;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
-public enum Key implements StringRepresentable {
+public enum MibNote implements StringRepresentable {
     C("c"),
     C_SHARP("c#"),
     D("d"),
@@ -17,7 +17,7 @@ public enum Key implements StringRepresentable {
     A_SHARP("a#"),
     B("b");
 
-    Key(String name) {
+    MibNote(String name) {
         this.name = name;
     }
 
@@ -29,19 +29,19 @@ public enum Key implements StringRepresentable {
         return name;
     }
 
-    public static Key getKey(String str) {
-        for (Key key : Key.values())
-            if (str.equals(key.name))
+    public static MibNote getNote(String str) {
+        for (MibNote key : MibNote.values())
+            if (str.toLowerCase().equals(key.name))
                 return key;
-        throw new IllegalStateException("Could not find key '" + str + "'. Must be one of " + buildValuesString() + ".");
+        throw new IllegalStateException("Could not find note '" + str + "'. Must be one of " + buildValuesString() + ".");
     }
 
     public static String buildValuesString() {
         StringBuilder builder = new StringBuilder("[ ");
-        for (int i = 0; i < Key.values().length; ++i) {
+        for (int i = 0; i < MibNote.values().length; ++i) {
             if (i != 0)
                 builder.append(", ");
-            Key key = Key.values()[i];
+            MibNote key = MibNote.values()[i];
             builder.append(key.getSerializedName());
         }
         builder.append(" ]");

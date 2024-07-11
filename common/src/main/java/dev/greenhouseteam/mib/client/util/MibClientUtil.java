@@ -13,18 +13,41 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 public class MibClientUtil {
     public static void queueSound(Player player, InteractionHand hand, ExtendedSound extendedSound, float volume, float pitch) {
-        Minecraft.getInstance().getSoundManager().queueTickingSound(MibSoundInstance.createEntityDependent(
+        Minecraft.getInstance().getSoundManager().queueTickingSound(MibSoundInstance.createFromEntityUsage(
                 player,
                 player.getItemInHand(hand),
                 extendedSound,
                 volume,
                 pitch)
+        );
+    }
+
+    public static void queueSingleNoteOnEntity(@Nullable Entity entity, ExtendedSound extendedSound, float volume, float pitch, float duration) {
+        Minecraft.getInstance().getSoundManager().queueTickingSound(MibSoundInstance.createEntityDependentUnbound(
+                entity,
+                extendedSound,
+                volume,
+                pitch,
+                duration)
+        );
+    }
+
+    public static void queueSingleNoteAtPos(Vec3 pos, ExtendedSound extendedSound, float volume, float pitch, float duration) {
+        Minecraft.getInstance().getSoundManager().queueTickingSound(MibSoundInstance.createPosDependent(
+                pos,
+                extendedSound,
+                volume,
+                pitch,
+                duration)
         );
     }
 

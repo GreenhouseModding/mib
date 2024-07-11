@@ -2,8 +2,8 @@ package dev.greenhouseteam.mib.registry;
 
 import dev.greenhouseteam.mib.Mib;
 import dev.greenhouseteam.mib.component.ItemInstrument;
-import dev.greenhouseteam.mib.data.Key;
-import dev.greenhouseteam.mib.data.KeyWithOctave;
+import dev.greenhouseteam.mib.data.MibNote;
+import dev.greenhouseteam.mib.data.NoteWithOctave;
 import dev.greenhouseteam.mib.data.animation.FluteInstrumentAnimation;
 import dev.greenhouseteam.mib.data.animation.SwingOffhandInstrumentAnimation;
 import dev.greenhouseteam.mib.data.animation.TootInstrumentAnimation;
@@ -14,9 +14,9 @@ import net.minecraft.world.item.Item;
 
 public class MibItems {
     public static final Item ACOUSTIC_GUITAR = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.ACOUSTIC_GUITAR, 1, SwingOffhandInstrumentAnimation.INSTANCE)));
-    public static final Item COPPER_GOAT_HORN = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.COPPER_GOAT_HORN, new KeyWithOctave(Key.G, 3), TootInstrumentAnimation.INSTANCE)));
-    public static final Item FANTASY_TRUMPET = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.FANTASY_TRUMPET, new KeyWithOctave(Key.G_SHARP, 3), TootInstrumentAnimation.INSTANCE)));
-    public static final Item FLUTE = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.FLUTE, new KeyWithOctave(Key.C, 4), FluteInstrumentAnimation.INSTANCE)));
+    public static final Item COPPER_GOAT_HORN = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.COPPER_GOAT_HORN, new NoteWithOctave(MibNote.G, 3), TootInstrumentAnimation.INSTANCE)));
+    public static final Item FANTASY_TRUMPET = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.FANTASY_TRUMPET, new NoteWithOctave(MibNote.G_SHARP, 3), TootInstrumentAnimation.INSTANCE)));
+    public static final Item FLUTE = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.FLUTE, new NoteWithOctave(MibNote.C, 4), FluteInstrumentAnimation.INSTANCE)));
     public static final Item HARPSICHORD = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.HARPSICHORD, 1)));
     public static final Item KEYBOARD = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.KEYBOARD, 1)));
     public static final Item SAXOPHONE = new MibInstrumentItem(new Item.Properties().stacksTo(1).component(MibDataComponents.INSTRUMENT, new ItemInstrument(MibSoundSets.SAXOPHONE, TootInstrumentAnimation.INSTANCE)));

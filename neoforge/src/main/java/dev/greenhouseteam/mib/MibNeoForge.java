@@ -1,5 +1,7 @@
 package dev.greenhouseteam.mib;
 
+import dev.greenhouseteam.mib.command.MibCommand;
+import dev.greenhouseteam.mib.network.clientbound.PlaySingleNoteClientboundPacket;
 import dev.greenhouseteam.mib.network.clientbound.StartPlayingClientboundPacket;
 import dev.greenhouseteam.mib.platform.MibPlatformHelperNeoForge;
 import dev.greenhouseteam.mib.registry.MibItems;
@@ -9,6 +11,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import java.util.Map;
@@ -24,8 +27,14 @@ public class MibNeoForge {
     public static class ModEvents {
         @SubscribeEvent
         public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
-            event.registrar("1.0.0")
+            event.registrar("2.0.0")
+                    .playToClient(PlaySingleNoteClientboundPacket.TYPE, PlaySingleNoteClientboundPacket.STREAM_CODEC, (packet, context) -> packet.handle())
                     .playToClient(StartPlayingClientboundPacket.TYPE, StartPlayingClientboundPacket.STREAM_CODEC, (packet, context) -> packet.handle());
+        }
+
+        @SubscribeEvent
+        public static void registerCommands(RegisterCommandsEvent event) {
+            MibCommand.registerCommands(event.getDispatcher());
         }
 
         @SubscribeEvent
@@ -43,25 +52,25 @@ public class MibNeoForge {
         private static void addAfterAnyItem(BuildCreativeModeTabContentsEvent event, Item startItem, Item newItem) {
             if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
                 ItemStack startStack = null;
-                for (Map.Entry<ItemStack, CreativeModeTab.TabVisibility> entry : event.getEntries()) {
-                    if (entry.getKey().is(startItem)) {
-                        startStack = entry.getKey();
+                for (ItemStack entry : event.getParentEntries()) {
+                    if (entry.is(startItem)) {
+                        startStack = entry;
                     }
                 }
-                event.getEntries().putAfter(startStack, new ItemStack(newItem), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                event.insertAfter(startStack, new ItemStack(newItem), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             }
         }
 
         private static void addAfter(BuildCreativeModeTabContentsEvent event, Item startItem, Item newItem) {
             if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
                 ItemStack startStack = null;
-                for (Map.Entry<ItemStack, CreativeModeTab.TabVisibility> entry : event.getEntries()) {
-                    if (entry.getKey().is(startItem)) {
-                        startStack = entry.getKey();
+                for (ItemStack entry : event.getParentEntries()) {
+                    if (entry.is(startItem)) {
+                        startStack = entry;
                         break;
                     }
                 }
-                event.getEntries().putAfter(startStack, new ItemStack(newItem), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                event.insertAfter(startStack, new ItemStack(newItem), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             }
         }
     }

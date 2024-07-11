@@ -1,7 +1,7 @@
 package dev.greenhouseteam.mib.gradle
 
 object Versions {
-    const val MOD = "0.1.2"
+    const val MOD = "0.2.0"
 
     const val MINECRAFT = "1.21"
     const val INTERNAL_MINECRAFT = "1.21"
@@ -14,7 +14,7 @@ object Versions {
     const val FABRIC_LOADER_RANGE = ">=0.15"
     const val FABRIC_MINECRAFT_RANGE = ">=1.21"
 
-    const val NEOFORGE = "21.0.0-beta"
+    const val NEOFORGE = "21.0.83-beta"
     const val NEOFORGE_LOADER_RANGE = "[3,)"
     const val NEOFORGE_MINECRAFT_RANGE = "[1.21,)"
 

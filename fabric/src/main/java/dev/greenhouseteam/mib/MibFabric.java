@@ -1,12 +1,18 @@
 package dev.greenhouseteam.mib;
 
+import dev.greenhouseteam.mib.command.MibCommand;
+import dev.greenhouseteam.mib.command.argument.NoteArgumentType;
 import dev.greenhouseteam.mib.data.MibSoundSet;
+import dev.greenhouseteam.mib.network.clientbound.PlaySingleNoteClientboundPacket;
 import dev.greenhouseteam.mib.network.clientbound.StartPlayingClientboundPacket;
 import dev.greenhouseteam.mib.registry.*;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +33,11 @@ public class MibFabric implements ModInitializer {
 
         DynamicRegistries.registerSynced(MibRegistries.SOUND_SET, MibSoundSet.DIRECT_CODEC);
 
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            MibCommand.registerCommands(dispatcher);
+        });
+        ArgumentTypeRegistry.registerArgumentType(Mib.asResource("note"), NoteArgumentType.class, SingletonArgumentInfo.contextFree(NoteArgumentType::note));
+
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             ItemStack goatHorn = ItemStack.EMPTY;
             for (ItemStack stack : entries.getDisplayStacks()) {
@@ -45,6 +56,7 @@ public class MibFabric implements ModInitializer {
     }
 
     public static void registerNetwork() {
+        PayloadTypeRegistry.playS2C().register(PlaySingleNoteClientboundPacket.TYPE, PlaySingleNoteClientboundPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(StartPlayingClientboundPacket.TYPE, StartPlayingClientboundPacket.STREAM_CODEC);
     }
 }

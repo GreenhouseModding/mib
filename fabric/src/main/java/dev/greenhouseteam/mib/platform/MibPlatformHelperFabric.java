@@ -5,9 +5,11 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -68,5 +70,13 @@ public class MibPlatformHelperFabric implements MibPlatformHelper {
         }
         if (entity instanceof ServerPlayer player && !players.contains(player))
             ServerPlayNetworking.send(player, payload);
+    }
+
+    @Override
+    public void sendTrackingClientboundPacket(CustomPacketPayload payload, ServerLevel level, BlockPos pos) {
+        Collection<ServerPlayer> players = PlayerLookup.tracking(level, level.getChunk(pos).getPos());
+        for (ServerPlayer other : players) {
+            ServerPlayNetworking.send(other, payload);
+        }
     }
 }
