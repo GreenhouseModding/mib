@@ -1,16 +1,13 @@
 package dev.greenhouseteam.mib.platform;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.phys.Vec3;
 
 public interface MibPlatformHelper {
 
@@ -56,7 +53,7 @@ public interface MibPlatformHelper {
 
     boolean shouldApplyUseSlowness(ItemStack stack, LivingEntity entity, boolean original);
 
-    void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity);
+    void sendClientboundPacket(CustomPacketPayload payload, ServerPlayer player);
 
-    void sendTrackingClientboundPacket(CustomPacketPayload payload, ServerLevel level, BlockPos pos);
+    void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity);
 }

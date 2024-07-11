@@ -4,25 +4,24 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.greenhouseteam.mib.Mib;
-import dev.greenhouseteam.mib.client.util.MibClientUtil;
 import dev.greenhouseteam.mib.network.clientbound.PlaySingleNoteClientboundPacket;
 import dev.greenhouseteam.mib.network.clientbound.StartPlayingClientboundPacket;
 import dev.greenhouseteam.mib.registry.MibRegistries;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFileCodec;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -42,38 +41,38 @@ public class MibSoundSet {
         this.octaveKeyToSoundMap = map;
     }
 
-    public void playSoundWithLength(Entity entity, MibNote note, int octave, float volume, float length) {
-        if (entity.level().isClientSide) {
-            playSoundWithLength(null, Either.left(entity), note, octave, volume, length);
-            return;
-        }
-        playSoundWithLength((ServerLevel) entity.level(), Either.left(entity), note, octave, volume, length);
+    public int playSoundWithLength(Collection<ServerPlayer> players, Entity entity, MibNote note, int octave, float volume, float length) {
+        return playSoundWithLength(players, Either.left(entity), note, octave, volume, length);
     }
 
-    public void playSoundWithLength(ServerLevel level, Vec3 pos, MibNote note, int octave, float volume, float length) {
-        playSoundWithLength(level, Either.right(pos), note, octave, volume, length);
+    public int playSoundWithLength(Collection<ServerPlayer> players, Vec3 pos, MibNote note, int octave, float volume, float length) {
+        return playSoundWithLength(players, Either.right(pos), note, octave, volume, length);
     }
 
-    public void playSoundWithLength(ServerLevel level, Either<Entity, Vec3> entityOrPos, MibNote note, int octave, float volume, float duration) {
+    public int playSoundWithLength(Collection<ServerPlayer> players, Either<Entity, Vec3> entityOrPos, MibNote note, int octave, float volume, float duration) {
         NoteWithOctave keyWithOctave = new NoteWithOctave(note, octave);
         var sound = getSound(keyWithOctave, volume);
         if (sound == null)
-            return;
+            return 0;
         NoteWithOctave closest = getClosestDefined(keyWithOctave);
 
+        Vec3 pos = entityOrPos.map(Entity::position, p -> p);
         var entityIdOrPos = entityOrPos.mapLeft(Entity::getId);
         float pitch = keyWithOctave.getPitchFromNote(closest);
 
-        if (level == null) {
-            entityOrPos
-                    .ifLeft(entity ->  MibClientUtil.queueSingleNoteOnEntity(entity, sound, volume, pitch, duration))
-                    .ifRight(pos -> MibClientUtil.queueSingleNoteAtPos(pos, sound, volume, pitch, duration));
-            return;
+        double range = Mth.square(sound.sounds().start().value().getRange(volume));
+        int i = 0;
+        for (ServerPlayer player : players) {
+            double xDiff = pos.x - player.getX();
+            double yDiff = pos.y - player.getY();
+            double zDiff = pos.z - player.getZ();
+            double diffSqr = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff;
+            if (diffSqr > range)
+                continue;
+            Mib.getHelper().sendTrackingClientboundPacket(new PlaySingleNoteClientboundPacket(entityIdOrPos, sound, volume, pitch, duration), player);
+            ++i;
         }
-
-        entityIdOrPos
-                .ifLeft(entity -> Mib.getHelper().sendTrackingClientboundPacket(new PlaySingleNoteClientboundPacket(entityIdOrPos, sound, volume, pitch, duration), entityOrPos.left().orElseThrow()))
-                .ifRight(pos -> Mib.getHelper().sendTrackingClientboundPacket(new PlaySingleNoteClientboundPacket(entityIdOrPos, sound, volume, pitch, duration), level, BlockPos.containing(pos)));
+        return i;
     }
 
     public void playSound(LivingEntity player, InteractionHand hand, MibNote note, int octave, float volume) {

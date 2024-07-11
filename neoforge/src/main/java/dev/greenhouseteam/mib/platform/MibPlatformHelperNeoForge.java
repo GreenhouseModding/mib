@@ -1,11 +1,9 @@
 package dev.greenhouseteam.mib.platform;
 
 import dev.greenhouseteam.mib.event.MibInstrumentEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -62,14 +60,14 @@ public class MibPlatformHelperNeoForge implements MibPlatformHelper {
     }
 
     @Override
+    public void sendClientboundPacket(CustomPacketPayload payload, ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, payload);
+    }
+
+    @Override
     public void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity) {
         PacketDistributor.sendToPlayersTrackingEntity(entity, payload);
         if (entity instanceof ServerPlayer player)
             PacketDistributor.sendToPlayer(player, payload);
-    }
-
-    @Override
-    public void sendTrackingClientboundPacket(CustomPacketPayload payload, ServerLevel level, BlockPos pos) {
-        PacketDistributor.sendToPlayersTrackingChunk(level, level.getChunk(pos).getPos(), payload);
     }
 }

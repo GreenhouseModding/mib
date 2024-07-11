@@ -63,6 +63,11 @@ public class MibPlatformHelperFabric implements MibPlatformHelper {
     }
 
     @Override
+    public void sendClientboundPacket(CustomPacketPayload payload, ServerPlayer player) {
+        ServerPlayNetworking.send(player, payload);
+    }
+
+    @Override
     public void sendTrackingClientboundPacket(CustomPacketPayload payload, Entity entity) {
         Collection<ServerPlayer> players = PlayerLookup.tracking(entity);
         for (ServerPlayer other : players) {
@@ -70,13 +75,5 @@ public class MibPlatformHelperFabric implements MibPlatformHelper {
         }
         if (entity instanceof ServerPlayer player && !players.contains(player))
             ServerPlayNetworking.send(player, payload);
-    }
-
-    @Override
-    public void sendTrackingClientboundPacket(CustomPacketPayload payload, ServerLevel level, BlockPos pos) {
-        Collection<ServerPlayer> players = PlayerLookup.tracking(level, level.getChunk(pos).getPos());
-        for (ServerPlayer other : players) {
-            ServerPlayNetworking.send(other, payload);
-        }
     }
 }
