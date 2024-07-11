@@ -26,6 +26,7 @@ public class MibCommand {
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> mibNode = Commands
                 .literal("mib")
+                .requires(stack -> stack.hasPermission(2))
                 .build();
 
         // TODO: Clean this up, maybe separate into different nodes.
