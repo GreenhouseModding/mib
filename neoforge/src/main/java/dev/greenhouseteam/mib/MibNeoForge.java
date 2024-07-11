@@ -33,11 +33,6 @@ public class MibNeoForge {
         }
 
         @SubscribeEvent
-        public static void registerCommands(RegisterCommandsEvent event) {
-            MibCommand.registerCommands(event.getDispatcher());
-        }
-
-        @SubscribeEvent
         public static void buildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
             addAfterAnyItem(event, Items.GOAT_HORN, MibItems.ACOUSTIC_GUITAR);
             addAfter(event, MibItems.ACOUSTIC_GUITAR, MibItems.COPPER_GOAT_HORN);
@@ -72,6 +67,14 @@ public class MibNeoForge {
                 }
                 event.insertAfter(startStack, new ItemStack(newItem), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             }
+        }
+    }
+
+    @EventBusSubscriber(modid = Mib.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+    public static class GameEvents {
+        @SubscribeEvent
+        public static void registerCommands(RegisterCommandsEvent event) {
+            MibCommand.registerCommands(event.getDispatcher());
         }
     }
 }
