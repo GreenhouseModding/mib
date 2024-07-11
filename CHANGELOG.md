@@ -2,8 +2,9 @@
 - Added `/mib play` command. Which allows users to play Mib instruments at a specific note. 
   Full usage of the command is:
   - `/mib play <soundSet> <note> <octave> <volume> <length> <targets> pos/entity <origin>`
-- Removed `fade_start` field from data. This will now be handled automatically.
+- Removed `fade_start` field from sound set data. This will now be handled automatically.
   - Copper Goat Horns and Flutes can now be played to any length.
+- Updated mod version schema to `{mod_version}+{minecraft_version}`.
 
 ## Miscellaneous
 - Allowed notes to be case insensitive in data and commands.
